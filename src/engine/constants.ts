@@ -50,3 +50,17 @@ export const BIOME_COLORS: Record<string, string> = {
   Brown: '#8B4513',
   Green: '#27AE60',
 };
+
+export const KEYWORD_INFO: Record<string, { color: string; icon: string; description: string }> = {
+  Produce:   { color: '#D4A017', icon: '$', description: 'Generates X resources when activated on the battle line.' },
+  Steal:     { color: '#FF9800', icon: '$', description: 'Steals X resources from your opponent when activated.' },
+  Fast:      { color: '#FFC107', icon: '>', description: 'Attacks before the normal combat phase.' },
+  Slow:      { color: '#78909C', icon: '<', description: 'Attacks after the normal combat phase.' },
+  Venomous:  { color: '#9B59B6', icon: '~', description: 'Applies X poison counters on hit. Poisoned cards take counter damage each spin, then counters reduce by 1.' },
+  Poisonous: { color: '#6A1B9A', icon: '~', description: 'Applies X poison counters to any card that attacks this one.' },
+  Thorns:    { color: '#C0392B', icon: '*', description: 'Deals X damage back to any card that attacks this one.' },
+  Angry:     { color: '#FF5722', icon: '!', description: 'Deals +50% damage when below 50% health.' },
+  Regenerate:{ color: '#2ECC71', icon: '+', description: 'Heals self for X at the start of each spin.' },
+  Healing:   { color: '#E91E63', icon: '+', description: 'Heals adjacent cards for X at the start of each spin.' },
+  Bolster:   { color: '#2980B9', icon: '^', description: 'Adjacent cards deal +X additional damage.' },
+};

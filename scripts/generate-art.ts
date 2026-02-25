@@ -170,35 +170,46 @@ const BIOME_THEMES: Record<string, string> = {
 function buildPrompt(card: CardEntry): string {
   const biomeTheme = BIOME_THEMES[card.biome] || 'fantasy';
 
-  if (card.category === 'Critter' || card.category === 'Ally') {
+  if (card.category === 'Critter') {
     return [
-      'Game character portrait, creature design, digital art style.',
+      'Full Body stylized game character portrait, "Critters" game style, collect and battle character, high-end 3D character design (Pixar/Dreamworks style), stylized 3D render, cinematic lighting, bokeh background, 8k resolution, high detail.',
       `Name: ${card.name}. Biome: ${card.biome}. Type: ${card.archetype}.`,
       `Description: ${card.description}`,
       `Theme: ${biomeTheme}.`,
-      'Square portrait, centered, dark background, vibrant colors.',
+      'Square portrait, centered, vibrant colors.',
+      'No text, no words, no letters in the image.',
+    ].join('\n');
+  }
+
+  if (card.category === 'Ally') {
+    return [
+      'Full Body stylized game character portrait, "Critters" game style, collect and battle character, high-end 3D character design (Pixar/Dreamworks style), stylized 3D render, cinematic lighting, bokeh background, 8k resolution, high detail.',
+      `Name: ${card.name}. Biome: ${card.biome}. Type: ${card.archetype}.`,
+      `Description: ${card.description}`,
+      `Theme: ${biomeTheme}.`,
+      'Square portrait, centered, vibrant colors.',
       'No text, no words, no letters in the image.',
     ].join('\n');
   }
 
   if (card.category === 'Location') {
     return [
-      'Fantasy game environment art, landscape illustration, digital painting.',
+      'Full environment stylized game art, "Critters" game style, high-end 3D environment design (Pixar/Dreamworks style), stylized 3D render, cinematic lighting, depth of field, 8k resolution, high detail.',
       `Name: ${card.name}. Biome: ${card.biome}.`,
       `Description: ${card.description}`,
       `Theme: ${biomeTheme}.`,
-      'Wide landscape view, atmospheric lighting, vibrant colors, dark moody edges.',
+      'Square portrait, wide-angle 3D view, vibrant colors, dark moody edges.',
       'No text, no words, no letters in the image.',
     ].join('\n');
   }
 
   // Relic
   return [
-    'Fantasy game item art, magical artifact illustration, digital painting.',
+    'Magical item stylized game art, "Critters" game style, high-end 3D prop design (Pixar/Dreamworks style), stylized 3D render, cinematic lighting, bokeh background, 8k resolution, high detail.',
     `Name: ${card.name}. Biome: ${card.biome}.`,
     `Description: ${card.description}`,
     `Theme: ${biomeTheme}.`,
-    'Centered magical object, glowing energy, dark background, vibrant colors.',
+    'Square portrait, centered magical object, glowing energy, vibrant colors.',
     'No text, no words, no letters in the image.',
   ].join('\n');
 }

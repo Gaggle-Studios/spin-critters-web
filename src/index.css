@@ -83,3 +83,13 @@ button:hover:not(:disabled) {
 .reel-landed {
   animation: reelLand 0.25s ease-out;
 }
+
+/* Card hover zoom */
+@keyframes cardZoomIn {
+  0%   { opacity: 0; transform: scale(0.9); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+.card-zoom-enter {
+  animation: cardZoomIn 0.12s ease-out;
+}

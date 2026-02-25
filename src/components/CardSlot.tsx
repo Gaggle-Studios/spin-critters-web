@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import type { CardInstance, CardDefinition } from '../engine/types.ts';
-import { BIOME_COLORS } from '../engine/constants.ts';
+import { BIOME_COLORS, KEYWORD_INFO } from '../engine/constants.ts';
+import { CardZoom } from './CardZoom.tsx';
 
 interface CardSlotProps {
   card?: CardInstance | null;
@@ -24,7 +25,6 @@ const COMPACT_W = 76;
 const COMPACT_H = 110;
 
 export function CardSlot({ card, definition, isActive, onClick, compact, selected, highlight, shake }: CardSlotProps) {
-  // Normalize: extract display data from either card (CardInstance) or definition (CardDefinition)
   const source = card ?? null;
   const def = definition ?? null;
 
@@ -38,13 +38,35 @@ export function CardSlot({ card, definition, isActive, onClick, compact, selecte
   const isKO = source?.isKO ?? false;
   const level = source?.level ?? 1;
   const keywords = source?.keywords ?? def?.keywords ?? [];
-  const rarity = def?.rarity ?? null;
 
   const [imgError, setImgError] = useState(false);
+  const [hovered, setHovered] = useState(false);
+  const cardRef = useRef<HTMLDivElement>(null);
+  const hoverTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     setImgError(false);
   }, [cardId]);
+
+  // Cleanup hover timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (hoverTimeout.current) clearTimeout(hoverTimeout.current);
+    };
+  }, []);
+
+  const handleMouseEnter = () => {
+    // Small delay to prevent flicker on quick mouse-through
+    hoverTimeout.current = setTimeout(() => setHovered(true), 120);
+  };
+
+  const handleMouseLeave = () => {
+    if (hoverTimeout.current) {
+      clearTimeout(hoverTimeout.current);
+      hoverTimeout.current = null;
+    }
+    setHovered(false);
+  };
 
   const w = compact ? COMPACT_W : FULL_W;
   const h = compact ? COMPACT_H : FULL_H;
@@ -80,119 +102,169 @@ export function CardSlot({ card, definition, isActive, onClick, compact, selecte
   const borderColor = highlight || (selected ? '#FFD700' : isActive ? '#FFD700' : isKO ? '#555' : '#888');
   const glowColor = highlight || ((isActive || selected) ? '#FFD700' : undefined);
 
-  return (
-    <div
-      onClick={onClick}
-      className={shake ? 'battle-shake' : undefined}
-      style={{
-        width: w,
-        height: h,
-        background: isKO ? '#2a2a2a' : bgColor,
-        border: `2px solid ${borderColor}`,
-        borderRadius: 6,
-        fontFamily: 'monospace',
-        cursor: onClick ? 'pointer' : 'default',
-        opacity: isKO ? 0.5 : 1,
-        display: 'flex',
-        flexDirection: 'column',
-        overflow: 'hidden',
-        position: 'relative',
-        boxShadow: glowColor ? `0 0 8px ${glowColor}` : 'none',
-        transition: 'border-color 0.15s, box-shadow 0.15s',
-      }}
-    >
-      {/* KO overlay */}
-      {isKO && (
-        <div style={{
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          fontSize: 32,
-          fontWeight: 'bold',
-          color: '#f00',
-          opacity: 0.7,
-          zIndex: 3,
-        }}>
-          X
-        </div>
-      )}
+  const hasKeywords = keywords.length > 0;
 
-      {/* Top: Name + Category/Rarity */}
-      <div style={{
-        padding: '3px 4px 2px',
-        background: 'rgba(0,0,0,0.5)',
-        flexShrink: 0,
-        zIndex: 1,
-      }}>
-        <div style={{
-          fontWeight: 'bold',
-          fontSize: compact ? 8.5 : 10,
-          whiteSpace: 'nowrap',
+  return (
+    <>
+      <div
+        ref={cardRef}
+        onClick={onClick}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        className={shake ? 'battle-shake' : undefined}
+        style={{
+          width: w,
+          height: h,
+          background: isKO ? '#2a2a2a' : bgColor,
+          border: `2px solid ${borderColor}`,
+          borderRadius: 6,
+          fontFamily: 'monospace',
+          cursor: onClick ? 'pointer' : 'default',
+          opacity: isKO ? 0.5 : 1,
+          display: 'flex',
+          flexDirection: 'column',
           overflow: 'hidden',
-          textOverflow: 'ellipsis',
-          color: isKO ? '#666' : '#fff',
+          position: 'relative',
+          boxShadow: glowColor ? `0 0 8px ${glowColor}` : 'none',
+          transition: 'border-color 0.15s, box-shadow 0.15s, transform 0.1s',
+          transform: hovered ? 'scale(1.05)' : 'scale(1)',
+          zIndex: hovered ? 10 : 1,
+        }}
+      >
+        {/* KO overlay */}
+        {isKO && (
+          <div style={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            fontSize: 32,
+            fontWeight: 'bold',
+            color: '#f00',
+            opacity: 0.7,
+            zIndex: 3,
+          }}>
+            X
+          </div>
+        )}
+
+        {/* Top: Name + Level */}
+        <div style={{
+          padding: '3px 4px 2px',
+          background: 'rgba(0,0,0,0.5)',
+          flexShrink: 0,
+          zIndex: 1,
         }}>
-          {name}
+          <div style={{
+            fontWeight: 'bold',
+            fontSize: compact ? 8.5 : 10,
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            color: isKO ? '#666' : '#fff',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}>
+            <span style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>{name}</span>
+            {level > 1 && (
+              <span style={{ fontSize: compact ? 7 : 8, color: '#FFD700', flexShrink: 0, marginLeft: 2 }}>
+                L{level}
+              </span>
+            )}
+          </div>
         </div>
+
+        {/* Middle: Image or biome color fill */}
         <div style={{
-          fontSize: compact ? 7 : 8,
-          color: isKO ? '#555' : '#ccc',
-          whiteSpace: 'nowrap',
+          flex: 1,
+          position: 'relative',
           overflow: 'hidden',
-          textOverflow: 'ellipsis',
+          minHeight: 0,
         }}>
-          {category}{level > 1 ? ` Lv${level}` : ''}
-          {rarity && rarity !== 'Common' ? ` (${rarity})` : ''}
-          {keywords.length > 0 && (
-            <span style={{ marginLeft: 3, opacity: 0.8 }}>
-              {keywords.map((k) => k.name + (k.value ? ` ${k.value}` : '')).join(', ')}
-            </span>
+          {hasImage && (
+            <img
+              src={imageUrl}
+              alt={name}
+              onError={() => setImgError(true)}
+              style={{
+                display: 'block',
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+                opacity: isKO ? 0.3 : 1,
+              }}
+            />
           )}
         </div>
-      </div>
 
-      {/* Middle: Image or biome color fill */}
-      <div style={{
-        flex: 1,
-        position: 'relative',
-        overflow: 'hidden',
-        minHeight: 0,
-      }}>
-        {hasImage && (
-          <img
-            src={imageUrl}
-            alt={name}
-            onError={() => setImgError(true)}
-            style={{
-              display: 'block',
-              width: '100%',
-              height: '100%',
-              objectFit: 'cover',
-              opacity: isKO ? 0.3 : 1,
-            }}
-          />
+        {/* Keyword badges */}
+        {hasKeywords && (
+          <div style={{
+            padding: compact ? '1px 2px' : '2px 3px',
+            display: 'flex',
+            flexWrap: 'wrap',
+            gap: compact ? 1 : 2,
+            background: 'rgba(0,0,0,0.55)',
+            flexShrink: 0,
+            zIndex: 1,
+          }}>
+            {keywords.map((kw, i) => {
+              const info = KEYWORD_INFO[kw.name];
+              return (
+                <span
+                  key={i}
+                  style={{
+                    background: info?.color || '#666',
+                    color: '#fff',
+                    padding: compact ? '0 2px' : '0 3px',
+                    borderRadius: 2,
+                    fontSize: compact ? 6.5 : 7.5,
+                    fontWeight: 'bold',
+                    whiteSpace: 'nowrap',
+                    textShadow: '0 1px 1px rgba(0,0,0,0.6)',
+                    lineHeight: compact ? '1.2' : '1.4',
+                  }}
+                >
+                  {compact
+                    ? (kw.name.length > 4 ? kw.name.substring(0, 3) : kw.name)
+                    : kw.name
+                  }
+                  {kw.value ? ` ${kw.value}` : ''}
+                </span>
+              );
+            })}
+          </div>
         )}
+
+        {/* Bottom: Attack / Health */}
+        <div style={{
+          padding: '3px 4px',
+          background: 'rgba(0,0,0,0.5)',
+          display: 'flex',
+          justifyContent: 'space-between',
+          fontWeight: 'bold',
+          fontSize: compact ? 9.5 : 11,
+          flexShrink: 0,
+          zIndex: 1,
+        }}>
+          <span style={{ color: isKO ? '#666' : '#ff6b6b' }}>
+            {attack}A
+          </span>
+          <span style={{ color: isKO ? '#666' : '#6bff6b' }}>
+            {health}/{maxHealth}H
+          </span>
+        </div>
       </div>
 
-      {/* Bottom: Attack / Health */}
-      <div style={{
-        padding: '3px 4px',
-        background: 'rgba(0,0,0,0.5)',
-        display: 'flex',
-        justifyContent: 'space-between',
-        fontWeight: 'bold',
-        fontSize: compact ? 9.5 : 11,
-        flexShrink: 0,
-        zIndex: 1,
-      }}>
-        <span style={{ color: isKO ? '#666' : '#ff6b6b' }}>
-          {attack}A
-        </span>
-        <span style={{ color: isKO ? '#666' : '#6bff6b' }}>
-          {health}/{maxHealth}H
-        </span>
-      </div>
-    </div>
+      {/* Hover zoom overlay */}
+      {hovered && cardRef.current && (
+        <CardZoom
+          card={source}
+          definition={def}
+          anchorRect={cardRef.current.getBoundingClientRect()}
+        />
+      )}
+    </>
   );
 }

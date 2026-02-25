@@ -4,8 +4,8 @@ import { BIOME_COLORS } from '../engine/constants.ts';
 import { CardSlot } from './CardSlot.tsx';
 
 const PHANTOM_COUNT = 10;
-const CARD_H = 110;
-const CARD_W = 76;
+const CARD_H = 150;
+const CARD_W = 100;
 const BASE_DURATION = 600;
 const STAGGER_PER_COL = 150;
 
@@ -77,14 +77,14 @@ export function ReelSpinner({ resultCard, col }: ReelSpinnerProps) {
 
   // No card = locked/empty column, skip animation
   if (!resultCard) {
-    return <CardSlot card={null} isActive compact />;
+    return <CardSlot card={null} isActive />;
   }
 
   // After landing, show the real card with a bounce
   if (landed) {
     return (
       <div className="reel-landed">
-        <CardSlot card={resultCard} isActive compact />
+        <CardSlot card={resultCard} isActive />
       </div>
     );
   }
@@ -116,7 +116,7 @@ export function ReelSpinner({ resultCard, col }: ReelSpinnerProps) {
         {phantoms.map((p, i) => (
           <PhantomCard key={i} {...p} />
         ))}
-        <CardSlot card={resultCard} isActive compact />
+        <CardSlot card={resultCard} isActive />
       </div>
     </div>
   );
