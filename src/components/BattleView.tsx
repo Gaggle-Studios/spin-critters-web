@@ -125,15 +125,15 @@ export function BattleView() {
   const spinDisabled = isAnimating || isStoreAnimating;
 
   return (
-    <div style={{ padding: 32, fontFamily: 'monospace', color: '#eee' }}>
+    <div style={{ padding: 24, fontFamily: 'monospace', color: '#eee' }}>
       {/* Wrapper for overlay positioning */}
       <div style={{ position: 'relative' }}>
         {/* Opponent active row */}
         <div style={{ marginBottom: 16 }}>
-          <div style={{ fontSize: 22, color: '#aaa', marginBottom: 8, fontWeight: 'bold' }}>
+          <div style={{ fontSize: 17, color: '#aaa', marginBottom: 8, fontWeight: 'bold' }}>
             {opponent.name} (Morale: {opponent.morale}) - Resources: {opponent.resources}
           </div>
-          <div style={{ display: 'flex', gap: 6 }}>
+          <div style={{ display: 'flex', gap: 5 }}>
             {Array.from({ length: REEL_WIDTH }, (_, col) => {
               const card = getDisplayCard(opponent.id, col, battle.player2ActiveCards[col]);
               if (isSpinning) {
@@ -164,10 +164,10 @@ export function BattleView() {
           padding: '8px 0',
           color: '#f1c40f',
           fontWeight: 'bold',
-          fontSize: 22,
+          fontSize: 17,
           borderTop: '3px solid #f1c40f',
           borderBottom: '3px solid #f1c40f',
-          margin: '16px 0',
+          margin: '12px 0',
         }}>
           BATTLE LINE - Spin {battle.currentSpin}/{battle.maxSpins}
           {battle.currentSpin > 10 && ` (OVERTIME! +${battle.currentSpin - 10} dmg)`}
@@ -175,7 +175,7 @@ export function BattleView() {
 
         {/* Player active row */}
         <div style={{ marginBottom: 16 }}>
-          <div style={{ display: 'flex', gap: 6 }}>
+          <div style={{ display: 'flex', gap: 5 }}>
             {Array.from({ length: REEL_WIDTH }, (_, col) => {
               const card = getDisplayCard(human.id, col, battle.player1ActiveCards[col]);
               if (isSpinning) {
@@ -213,14 +213,14 @@ export function BattleView() {
       />
 
       {/* Controls */}
-      <div style={{ marginTop: 24, display: 'flex', gap: 16, alignItems: 'center' }}>
+      <div style={{ marginTop: 18, display: 'flex', gap: 12, alignItems: 'center' }}>
         {!battle.isComplete ? (
           !autoPlaying ? (
             <button
               onClick={handleGo}
               style={{
-                padding: '20px 64px',
-                fontSize: 28,
+                padding: '15px 48px',
+                fontSize: 21,
                 fontWeight: 'bold',
                 background: '#3498db',
                 color: '#fff',
@@ -234,14 +234,14 @@ export function BattleView() {
             </button>
           ) : (
             <>
-              <div style={{ fontSize: 24, color: '#f1c40f', fontWeight: 'bold' }}>
+              <div style={{ fontSize: 18, color: '#f1c40f', fontWeight: 'bold' }}>
                 Auto-battling...
               </div>
               <button
                 onClick={handleSkipAll}
                 style={{
-                  padding: '16px 40px',
-                  fontSize: 24,
+                  padding: '12px 30px',
+                  fontSize: 18,
                   fontWeight: 'bold',
                   background: '#e67e22',
                   color: '#fff',
@@ -259,8 +259,8 @@ export function BattleView() {
           <button
             onClick={endBattle}
             style={{
-              padding: '20px 64px',
-              fontSize: 28,
+              padding: '15px 48px',
+              fontSize: 21,
               fontWeight: 'bold',
               background: '#27ae60',
               color: '#fff',
@@ -276,7 +276,7 @@ export function BattleView() {
       </div>
 
       {/* Battle log */}
-      <div style={{ marginTop: 24 }}>
+      <div style={{ marginTop: 18 }}>
         <BattleLog log={battle.log} />
       </div>
     </div>

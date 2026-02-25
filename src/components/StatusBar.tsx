@@ -22,7 +22,7 @@ export function StatusBar({ tournament }: StatusBarProps) {
   return (
     <div style={{
       background: '#1a1a2e',
-      padding: '32px 64px',
+      padding: '24px 48px',
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center',
@@ -32,19 +32,19 @@ export function StatusBar({ tournament }: StatusBarProps) {
     }}>
       <div>
         <strong>SPIN CRITTERS</strong>
-        <span style={{ marginLeft: 32, color: '#aaa' }}>
+        <span style={{ marginLeft: 24, color: '#aaa' }}>
           Round {tournament.round} | Battle {tournament.battleInRound + 1}
         </span>
       </div>
-      <div style={{ display: 'flex', gap: 48, alignItems: 'center' }}>
+      <div style={{ display: 'flex', gap: 36, alignItems: 'center' }}>
         <div>
           <span style={{ color: '#aaa', marginRight: 8 }}>Morale:</span>
           <div style={{
             display: 'inline-block',
-            width: 200,
-            height: 28,
+            width: 150,
+            height: 21,
             background: '#333',
-            borderRadius: 14,
+            borderRadius: 10,
             overflow: 'hidden',
             verticalAlign: 'middle',
           }}>
@@ -52,7 +52,7 @@ export function StatusBar({ tournament }: StatusBarProps) {
               width: `${moralePct}%`,
               height: '100%',
               background: moralePct > 50 ? '#27ae60' : moralePct > 25 ? '#f39c12' : '#e74c3c',
-              borderRadius: 14,
+              borderRadius: 10,
             }} />
           </div>
           <span style={{ marginLeft: 8 }}>{human.morale}/50</span>
@@ -69,7 +69,7 @@ export function StatusBar({ tournament }: StatusBarProps) {
           style={{
             background: 'none', border: '2px solid #555', borderRadius: 6,
             color: '#aaa', cursor: 'pointer', fontFamily: 'monospace',
-            fontSize: 28, padding: '4px 16px',
+            fontSize: 21, padding: '3px 12px',
           }}
           title={muted ? 'Unmute' : 'Mute'}
         >

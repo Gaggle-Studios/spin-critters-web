@@ -6,9 +6,9 @@ interface BattleEventOverlayProps {
   humanPlayerId: string;
 }
 
-// Each column takes ~103px (100px card + 3px gap). The overlay positions
+// Each column takes ~155px (150px card + 5px gap). The overlay positions
 // floating numbers relative to the card grid containers.
-const COL_WIDTH = 103;
+const COL_WIDTH = 155;
 
 function FloatingNumber({ col, text, color, isOpponent }: {
   col: number;
@@ -24,7 +24,7 @@ function FloatingNumber({ col, text, color, isOpponent }: {
         left: col * COL_WIDTH + COL_WIDTH / 2,
         top: isOpponent ? '25%' : '75%',
         transform: 'translateX(-50%)',
-        fontSize: 36,
+        fontSize: 27,
         fontWeight: 'bold',
         color,
         textShadow: `0 0 12px ${color}, 0 4px 8px rgba(0,0,0,0.8)`,
@@ -95,13 +95,13 @@ function AttackBanner({ attackerName, defenderName, damage, isKO }: {
         top: '50%',
         left: '50%',
         transform: 'translate(-50%, -50%)',
-        fontSize: 26,
+        fontSize: 20,
         fontWeight: 'bold',
         color: '#fff',
         background: 'rgba(0,0,0,0.75)',
         border: '2px solid #ffd700',
         borderRadius: 6,
-        padding: '6px 20px',
+        padding: '5px 15px',
         pointerEvents: 'none',
         zIndex: 22,
         whiteSpace: 'nowrap',
@@ -126,7 +126,7 @@ function CritBanner({ text, color }: { text: string; color: string }) {
         top: '50%',
         left: '50%',
         transform: 'translate(-50%, -50%)',
-        fontSize: 44,
+        fontSize: 33,
         fontWeight: 'bold',
         color,
         textShadow: `0 0 24px ${color}, 0 0 48px ${color}`,
@@ -134,7 +134,7 @@ function CritBanner({ text, color }: { text: string; color: string }) {
         zIndex: 25,
         whiteSpace: 'nowrap',
         fontFamily: 'monospace',
-        letterSpacing: 4,
+        letterSpacing: 3,
       }}
     >
       {text}
@@ -151,7 +151,7 @@ function PhaseLabel({ label }: { label: string }) {
         top: 8,
         left: '50%',
         transform: 'translateX(-50%)',
-        fontSize: 22,
+        fontSize: 17,
         fontWeight: 'bold',
         color: '#f1c40f',
         textShadow: '0 0 12px rgba(241,196,15,0.5)',
@@ -177,7 +177,7 @@ function BattleEndBanner({ winnerName }: { winnerName: string }) {
         top: '50%',
         left: '50%',
         transform: 'translate(-50%, -50%)',
-        fontSize: 52,
+        fontSize: 39,
         fontWeight: 'bold',
         color: '#2ecc71',
         textShadow: '0 0 24px #2ecc71, 0 0 48px #2ecc71',

@@ -27,14 +27,14 @@ export function DraftView() {
   }
 
   return (
-    <div style={{ padding: 40, fontFamily: 'monospace', color: '#eee', maxWidth: 700, margin: '0 auto' }}>
+    <div style={{ padding: 30, fontFamily: 'monospace', color: '#eee', maxWidth: 525, margin: '0 auto' }}>
       <h2>Initial Draft</h2>
-      <p style={{ color: '#aaa', fontSize: 24 }}>
+      <p style={{ color: '#aaa', fontSize: 18 }}>
         Pack {currentPackIdx + 1} of {packs.length} ({isCommonPack ? 'Common' : 'Uncommon'})
         {' '} - Pick 1 card, then choose a column
       </p>
 
-      <div style={{ display: 'flex', gap: 24, marginTop: 32 }}>
+      <div style={{ display: 'flex', gap: 18, marginTop: 24 }}>
         {currentPack.map((card, idx) => (
           <CardSlot
             key={idx}
@@ -46,9 +46,9 @@ export function DraftView() {
       </div>
 
       {selectedCard !== null && (
-        <div style={{ marginTop: 40 }}>
+        <div style={{ marginTop: 30 }}>
           <p style={{ color: '#aaa' }}>Place in column:</p>
-          <div style={{ display: 'flex', gap: 16 }}>
+          <div style={{ display: 'flex', gap: 12 }}>
             {Array.from({ length: REEL_WIDTH }, (_, col) => {
               let cardCount = 0;
               for (let row = 0; row < human.reelHeight; row++) {
@@ -60,15 +60,15 @@ export function DraftView() {
                   onClick={() => handleColumnClick(col)}
                   disabled={cardCount >= human.reelHeight}
                   style={{
-                    width: 160,
-                    height: 100,
+                    width: 120,
+                    height: 75,
                     border: '3px solid #555',
-                    borderRadius: 9,
+                    borderRadius: 7,
                     background: '#1a1a2e',
                     color: '#eee',
                     cursor: cardCount >= human.reelHeight ? 'not-allowed' : 'pointer',
                     fontFamily: 'monospace',
-                    fontSize: 22,
+                    fontSize: 17,
                     opacity: cardCount >= human.reelHeight ? 0.4 : 1,
                   }}
                 >

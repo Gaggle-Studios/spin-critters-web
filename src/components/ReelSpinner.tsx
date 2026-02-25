@@ -4,8 +4,8 @@ import { BIOME_COLORS } from '../engine/constants.ts';
 import { CardSlot } from './CardSlot.tsx';
 
 const PHANTOM_COUNT = 10;
-const CARD_H = 300;
-const CARD_W = 200;
+const CARD_H = 225;
+const CARD_W = 150;
 const BASE_DURATION = 600;
 const STAGGER_PER_COL = 150;
 
@@ -37,7 +37,7 @@ function PhantomCard({ biome, attack, health }: PhantomData) {
         background: 'rgba(0,0,0,0.5)',
         padding: '2px 4px',
         borderRadius: 3,
-        fontSize: 18,
+        fontSize: 14,
         fontWeight: 'bold',
         color: '#fff',
       }}>
@@ -49,7 +49,7 @@ function PhantomCard({ biome, attack, health }: PhantomData) {
         background: 'rgba(0,0,0,0.5)',
         padding: '2px 4px',
         borderRadius: 3,
-        fontSize: 18,
+        fontSize: 14,
         fontWeight: 'bold',
       }}>
         <span style={{ color: '#ff6b6b' }}>{attack}A</span>

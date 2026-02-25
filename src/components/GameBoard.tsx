@@ -61,23 +61,23 @@ function GameOver({ tournament, onPlayAgain }: {
 
   return (
     <div style={{
-      padding: 80,
+      padding: 60,
       fontFamily: 'monospace',
       color: '#eee',
       textAlign: 'center',
       maxWidth: 600,
       margin: '0 auto',
     }}>
-      <h1 style={{ color: isWinner ? '#f1c40f' : '#e74c3c', fontSize: 64 }}>
+      <h1 style={{ color: isWinner ? '#f1c40f' : '#e74c3c', fontSize: 48 }}>
         {isWinner ? 'VICTORY!' : 'GAME OVER'}
       </h1>
-      <p style={{ fontSize: 32, color: '#aaa' }}>
+      <p style={{ fontSize: 24, color: '#aaa' }}>
         {isWinner
           ? 'You defeated all opponents!'
           : `You were eliminated in round ${tournament.round}`}
       </p>
 
-      <div style={{ marginTop: 48, textAlign: 'left' }}>
+      <div style={{ marginTop: 36, textAlign: 'left' }}>
         <h3>Final Standings</h3>
         {alive.map((p, i) => (
           <div key={p.id} style={{ padding: '8px 0', color: p.isHuman ? '#f1c40f' : '#aaa' }}>
@@ -94,14 +94,14 @@ function GameOver({ tournament, onPlayAgain }: {
         })}
       </div>
 
-      <div style={{ marginTop: 48 }}>
+      <div style={{ marginTop: 36 }}>
         <h3>Battle History</h3>
         {tournament.matchHistory.map((m, i) => {
           const p1 = tournament.players.find((p) => p.id === m.p1)!;
           const p2 = tournament.players.find((p) => p.id === m.p2)!;
           const winner = tournament.players.find((p) => p.id === m.winner)!;
           return (
-            <div key={i} style={{ padding: '4px 0', fontSize: 22, color: '#888' }}>
+            <div key={i} style={{ padding: '4px 0', fontSize: 17, color: '#888' }}>
               {p1.name} vs {p2.name} - Winner: {winner.name}
             </div>
           );
@@ -111,14 +111,14 @@ function GameOver({ tournament, onPlayAgain }: {
       <button
         onClick={onPlayAgain}
         style={{
-          marginTop: 64,
-          padding: '24px 64px',
-          fontSize: 32,
+          marginTop: 48,
+          padding: '18px 48px',
+          fontSize: 24,
           fontWeight: 'bold',
           background: '#27ae60',
           color: '#fff',
           border: 'none',
-          borderRadius: 12,
+          borderRadius: 9,
           cursor: 'pointer',
           fontFamily: 'monospace',
         }}

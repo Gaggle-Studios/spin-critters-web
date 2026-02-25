@@ -20,11 +20,11 @@ export function BattleLog({ log }: BattleLogProps) {
       background: '#0d0d1a',
       border: '1px solid #333',
       borderRadius: 4,
-      padding: 16,
-      height: 360,
+      padding: 12,
+      height: 270,
       overflowY: 'auto',
       fontFamily: 'monospace',
-      fontSize: 20,
+      fontSize: 15,
       color: '#ccc',
     }}>
       <div style={{ fontWeight: 'bold', color: '#aaa', marginBottom: 4 }}>BATTLE LOG</div>
