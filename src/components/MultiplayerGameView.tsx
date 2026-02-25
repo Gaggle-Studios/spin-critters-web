@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useGameStore } from '../store/gameStore.ts';
 import { CardSlot } from './CardSlot.tsx';
 import { ReelGrid } from './ReelGrid.tsx';
@@ -303,6 +303,14 @@ function MPBattleView({ state, playerId, pendingEvents, isStoreAnimating, finish
   const { currentEvent, eventIndex, isAnimating, startAnimation, skipAnimation } = useAnimationQueue(finishAnimation);
   const { getDisplayCard } = useProgressiveDisplay(isAnimating, pendingEvents, eventIndex);
 
+  // Auto-battle state
+  const [autoPlaying, setAutoPlaying] = useState(false);
+  const autoPlayingRef = useRef(false);
+
+  useEffect(() => {
+    autoPlayingRef.current = autoPlaying;
+  }, [autoPlaying]);
+
   const prevEventsRef = useRef(pendingEvents);
   useEffect(() => {
     if (pendingEvents.length > 0 && pendingEvents !== prevEventsRef.current) {
@@ -312,6 +320,57 @@ function MPBattleView({ state, playerId, pendingEvents, isStoreAnimating, finish
   }, [pendingEvents, startAnimation]);
 
   const battle = state.currentBattle;
+
+  // Reset auto-play when battle completes or a new battle starts
+  const battleSpinRef = useRef(battle?.currentSpin);
+  if (battle?.isComplete && autoPlaying) {
+    setAutoPlaying(false);
+    autoPlayingRef.current = false;
+  }
+  if (battle && battle.currentSpin === 0 && battleSpinRef.current !== 0) {
+    if (autoPlaying) {
+      setAutoPlaying(false);
+      autoPlayingRef.current = false;
+    }
+  }
+  battleSpinRef.current = battle?.currentSpin;
+
+  const isWaitingForMe = waitingFor?.playerIds.includes(playerId) ?? false;
+
+  // Auto-play: when animation finishes and server is waiting for us, auto-send spin
+  const prevAnimatingRef = useRef(isAnimating);
+  useEffect(() => {
+    const justFinished = prevAnimatingRef.current && !isAnimating && !isStoreAnimating;
+    prevAnimatingRef.current = isAnimating;
+
+    if (justFinished && autoPlayingRef.current && isWaitingForMe) {
+      const timer = setTimeout(() => {
+        if (autoPlayingRef.current) {
+          mpSpin();
+        }
+      }, 600);
+      return () => clearTimeout(timer);
+    }
+  }, [isAnimating, isStoreAnimating, isWaitingForMe, mpSpin]);
+
+  // Also auto-send spin when server first signals waiting (e.g. after opponent is ready)
+  useEffect(() => {
+    if (autoPlayingRef.current && isWaitingForMe && !isAnimating && !isStoreAnimating) {
+      const timer = setTimeout(() => {
+        if (autoPlayingRef.current) {
+          mpSpin();
+        }
+      }, 300);
+      return () => clearTimeout(timer);
+    }
+  }, [isWaitingForMe, isAnimating, isStoreAnimating, mpSpin]);
+
+  const handleGo = useCallback(() => {
+    setAutoPlaying(true);
+    autoPlayingRef.current = true;
+    mpSpin();
+  }, [mpSpin]);
+
   if (!battle) return <div style={{ padding: 20, color: '#eee', fontFamily: 'monospace' }}>No active battle.</div>;
 
   // Determine which player is "you" and which is opponent
@@ -336,9 +395,6 @@ function MPBattleView({ state, playerId, pendingEvents, isStoreAnimating, finish
     const list = shakeCols.get(pid);
     return list ? list.includes(col) : false;
   };
-
-  const isWaitingForMe = waitingFor?.playerIds.includes(playerId) ?? false;
-  const spinDisabled = isAnimating || isStoreAnimating || !isWaitingForMe;
 
   return (
     <div style={{ padding: 16, fontFamily: 'monospace', color: '#eee' }}>
@@ -401,39 +457,41 @@ function MPBattleView({ state, playerId, pendingEvents, isStoreAnimating, finish
       {/* Controls */}
       <div style={{ marginTop: 12, display: 'flex', gap: 8, alignItems: 'center' }}>
         {!battle.isComplete ? (
-          <>
+          !autoPlaying ? (
             <button
-              onClick={mpSpin}
-              disabled={spinDisabled}
+              onClick={handleGo}
+              disabled={!isWaitingForMe || isAnimating || isStoreAnimating}
               style={{
-                padding: '8px 24px', fontSize: 14, fontWeight: 'bold',
-                background: spinDisabled ? '#555' : '#3498db', color: '#fff',
-                border: 'none', borderRadius: 6,
-                cursor: spinDisabled ? 'not-allowed' : 'pointer', fontFamily: 'monospace',
+                padding: '10px 32px', fontSize: 16, fontWeight: 'bold',
+                background: (!isWaitingForMe || isAnimating || isStoreAnimating) ? '#555' : '#3498db',
+                color: '#fff', border: 'none', borderRadius: 6,
+                cursor: (!isWaitingForMe || isAnimating || isStoreAnimating) ? 'not-allowed' : 'pointer',
+                fontFamily: 'monospace',
               }}
             >
-              SPIN
+              GO!
             </button>
-            {isAnimating && (
-              <button onClick={skipAnimation} style={{
-                padding: '8px 16px', fontSize: 12, fontWeight: 'bold',
-                background: '#7f8c8d', color: '#fff', border: 'none', borderRadius: 6,
-                cursor: 'pointer', fontFamily: 'monospace',
-              }}>
-                SKIP
-              </button>
-            )}
-            {!isWaitingForMe && !isAnimating && (
-              <span style={{ color: '#f1c40f', fontSize: 12 }}>
-                Waiting for opponent to spin...
-              </span>
-            )}
-            {isWaitingForMe && !isAnimating && waitingFor?.timeoutMs && (
-              <span style={{ color: '#888', fontSize: 11 }}>
-                Auto-spin in {(waitingFor.timeoutMs / 1000).toFixed(0)}s
-              </span>
-            )}
-          </>
+          ) : (
+            <>
+              <div style={{ fontSize: 13, color: '#f1c40f', fontWeight: 'bold' }}>
+                Auto-battling...
+              </div>
+              {isAnimating && (
+                <button onClick={skipAnimation} style={{
+                  padding: '8px 16px', fontSize: 12, fontWeight: 'bold',
+                  background: '#7f8c8d', color: '#fff', border: 'none', borderRadius: 6,
+                  cursor: 'pointer', fontFamily: 'monospace',
+                }}>
+                  SKIP ANIM
+                </button>
+              )}
+              {!isWaitingForMe && !isAnimating && (
+                <span style={{ color: '#888', fontSize: 12 }}>
+                  Waiting for opponent...
+                </span>
+              )}
+            </>
+          )
         ) : (
           <span style={{ color: '#f1c40f', fontSize: 14, fontWeight: 'bold' }}>
             Battle over! {battle.winnerId === playerId ? 'You won!' : 'You lost.'}

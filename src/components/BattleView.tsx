@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { useGameStore } from '../store/gameStore.ts';
 import { ReelGrid } from './ReelGrid.tsx';
 import { BattleLog } from './BattleLog.tsx';
@@ -22,6 +22,23 @@ export function BattleView() {
   // Progressive HP display: cards show HP matching current animation frame
   const { getDisplayCard } = useProgressiveDisplay(isAnimating, pendingEvents, eventIndex);
 
+  // Auto-battle state — reset when a new battle starts
+  const [autoPlaying, setAutoPlaying] = useState(false);
+  const autoPlayingRef = useRef(false);
+  const battleIdRef = useRef(tournament.currentBattle?.player2?.id);
+  if (tournament.currentBattle?.player2?.id !== battleIdRef.current) {
+    battleIdRef.current = tournament.currentBattle?.player2?.id;
+    if (autoPlaying) {
+      setAutoPlaying(false);
+      autoPlayingRef.current = false;
+    }
+  }
+
+  // Keep ref in sync
+  useEffect(() => {
+    autoPlayingRef.current = autoPlaying;
+  }, [autoPlaying]);
+
   // Start animation when new pending events arrive
   const prevEventsRef = useRef(pendingEvents);
   useEffect(() => {
@@ -30,6 +47,51 @@ export function BattleView() {
     }
     prevEventsRef.current = pendingEvents;
   }, [pendingEvents, startAnimation]);
+
+  // Auto-play: when animation finishes and battle isn't complete, trigger next spin
+  const prevAnimatingRef = useRef(isAnimating);
+  useEffect(() => {
+    const justFinished = prevAnimatingRef.current && !isAnimating && !isStoreAnimating;
+    prevAnimatingRef.current = isAnimating;
+
+    if (justFinished && autoPlayingRef.current) {
+      const battle = useGameStore.getState().tournament.currentBattle;
+      if (battle && !battle.isComplete) {
+        // Small delay between spins so the player can see the board state
+        const timer = setTimeout(() => {
+          if (autoPlayingRef.current) {
+            spinAction();
+          }
+        }, 600);
+        return () => clearTimeout(timer);
+      } else {
+        setAutoPlaying(false);
+      }
+    }
+  }, [isAnimating, isStoreAnimating, spinAction]);
+
+  const handleGo = useCallback(() => {
+    setAutoPlaying(true);
+    autoPlayingRef.current = true;
+    spinAction();
+  }, [spinAction]);
+
+  const handleSkipAll = useCallback(() => {
+    setAutoPlaying(false);
+    autoPlayingRef.current = false;
+    skipAnimation();
+    // Run all remaining spins instantly
+    let safety = 100;
+    while (safety-- > 0) {
+      const state = useGameStore.getState().tournament;
+      if (!state.currentBattle || state.currentBattle.isComplete) break;
+      // Clear pending events before next spin
+      useGameStore.getState().finishAnimation();
+      useGameStore.getState().spin();
+    }
+    // Clear final animation
+    useGameStore.getState().finishAnimation();
+  }, [skipAnimation]);
 
   const battle = tournament.currentBattle;
   if (!battle) return <div style={{ padding: 20, color: '#eee' }}>No active battle.</div>;
@@ -145,34 +207,37 @@ export function BattleView() {
       />
 
       {/* Controls */}
-      <div style={{ marginTop: 12, display: 'flex', gap: 8 }}>
+      <div style={{ marginTop: 12, display: 'flex', gap: 8, alignItems: 'center' }}>
         {!battle.isComplete ? (
-          <>
+          !autoPlaying ? (
             <button
-              onClick={spinAction}
-              disabled={spinDisabled}
+              onClick={handleGo}
               style={{
-                padding: '8px 24px',
-                fontSize: 14,
+                padding: '10px 32px',
+                fontSize: 16,
                 fontWeight: 'bold',
-                background: spinDisabled ? '#555' : '#3498db',
+                background: '#3498db',
                 color: '#fff',
                 border: 'none',
                 borderRadius: 6,
-                cursor: spinDisabled ? 'not-allowed' : 'pointer',
+                cursor: 'pointer',
                 fontFamily: 'monospace',
               }}
             >
-              SPIN
+              GO!
             </button>
-            {isAnimating && (
+          ) : (
+            <>
+              <div style={{ fontSize: 13, color: '#f1c40f', fontWeight: 'bold' }}>
+                Auto-battling...
+              </div>
               <button
-                onClick={skipAnimation}
+                onClick={handleSkipAll}
                 style={{
-                  padding: '8px 16px',
-                  fontSize: 12,
+                  padding: '8px 20px',
+                  fontSize: 13,
                   fontWeight: 'bold',
-                  background: '#7f8c8d',
+                  background: '#e67e22',
                   color: '#fff',
                   border: 'none',
                   borderRadius: 6,
@@ -180,16 +245,16 @@ export function BattleView() {
                   fontFamily: 'monospace',
                 }}
               >
-                SKIP
+                SKIP TO END
               </button>
-            )}
-          </>
+            </>
+          )
         ) : (
           <button
             onClick={endBattle}
             style={{
-              padding: '8px 24px',
-              fontSize: 14,
+              padding: '10px 32px',
+              fontSize: 16,
               fontWeight: 'bold',
               background: '#27ae60',
               color: '#fff',
