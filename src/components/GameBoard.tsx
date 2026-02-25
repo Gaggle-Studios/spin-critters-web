@@ -4,11 +4,33 @@ import { CritterSelect } from './CritterSelect.tsx';
 import { DraftView } from './DraftView.tsx';
 import { BattleView } from './BattleView.tsx';
 import { ShopView } from './ShopView.tsx';
+import { MainMenu } from './MainMenu.tsx';
+import { LobbyView } from './LobbyView.tsx';
+import { MultiplayerGameView } from './MultiplayerGameView.tsx';
 
 export function GameBoard() {
+  const mode = useGameStore((s) => s.mode);
   const tournament = useGameStore((s) => s.tournament);
   const playAgain = useGameStore((s) => s.playAgain);
+  const roomId = useGameStore((s) => s.roomId);
+  const multiplayerState = useGameStore((s) => s.multiplayerState);
 
+  // Main menu
+  if (mode === 'menu') {
+    return <MainMenu />;
+  }
+
+  // Multiplayer mode
+  if (mode === 'multiplayer') {
+    // Show lobby if no game state yet
+    if (!multiplayerState) {
+      return <LobbyView />;
+    }
+    // Show the multiplayer game view
+    return <MultiplayerGameView />;
+  }
+
+  // Single-player mode (existing behavior)
   return (
     <div style={{
       minHeight: '100vh',
