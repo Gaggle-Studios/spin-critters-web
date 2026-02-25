@@ -29,18 +29,18 @@ export function ShopView() {
   }
 
   return (
-    <div style={{ padding: 20, fontFamily: 'monospace', color: '#eee', maxWidth: 800, margin: '0 auto' }}>
+    <div style={{ padding: 40, fontFamily: 'monospace', color: '#eee', maxWidth: 800, margin: '0 auto' }}>
       <h2>Shop Phase - Round {tournament.round}</h2>
-      <p style={{ color: '#aaa', fontSize: 12 }}>
+      <p style={{ color: '#aaa', fontSize: 24 }}>
         Resources: <span style={{ color: '#f1c40f', fontWeight: 'bold' }}>{human.resources}</span>
       </p>
 
-      <div style={{ display: 'flex', gap: 12, marginTop: 16 }}>
+      <div style={{ display: 'flex', gap: 24, marginTop: 32 }}>
         {pack.cards.map((card, idx) => {
           const cost = SHOP_COST[card.rarity] || 2;
           const canAfford = human.resources >= cost;
           return (
-            <div key={idx} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
+            <div key={idx} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}>
               <div style={{ opacity: canAfford ? 1 : 0.4 }}>
                 <CardSlot
                   definition={card}
@@ -49,10 +49,10 @@ export function ShopView() {
                 />
               </div>
               <div style={{
-                padding: '2px 8px',
+                padding: '4px 16px',
                 background: canAfford ? '#27ae60' : '#555',
-                borderRadius: 4,
-                fontSize: 11,
+                borderRadius: 6,
+                fontSize: 22,
                 fontWeight: 'bold',
                 color: '#fff',
               }}>
@@ -64,9 +64,9 @@ export function ShopView() {
       </div>
 
       {selectedCard !== null && (
-        <div style={{ marginTop: 16 }}>
+        <div style={{ marginTop: 32 }}>
           <p style={{ color: '#aaa' }}>Place in column:</p>
-          <div style={{ display: 'flex', gap: 8 }}>
+          <div style={{ display: 'flex', gap: 16 }}>
             {Array.from({ length: REEL_WIDTH }, (_, col) => {
               let cardCount = 0;
               let hasJunk = false;
@@ -83,15 +83,15 @@ export function ShopView() {
                   onClick={() => canPlace && handleColumnClick(col)}
                   disabled={!canPlace}
                   style={{
-                    width: 80,
-                    height: 50,
-                    border: '2px solid #555',
-                    borderRadius: 6,
+                    width: 160,
+                    height: 100,
+                    border: '3px solid #555',
+                    borderRadius: 9,
                     background: '#1a1a2e',
                     color: '#eee',
                     cursor: canPlace ? 'pointer' : 'not-allowed',
                     fontFamily: 'monospace',
-                    fontSize: 11,
+                    fontSize: 22,
                     opacity: canPlace ? 1 : 0.4,
                   }}
                 >
@@ -103,16 +103,16 @@ export function ShopView() {
         </div>
       )}
 
-      <div style={{ marginTop: 16, display: 'flex', gap: 8 }}>
+      <div style={{ marginTop: 32, display: 'flex', gap: 16 }}>
         <button
           onClick={handleReroll}
           disabled={human.resources < 2}
           style={{
-            padding: '8px 16px',
+            padding: '16px 32px',
             background: human.resources >= 2 ? '#e67e22' : '#555',
             color: '#fff',
             border: 'none',
-            borderRadius: 6,
+            borderRadius: 9,
             cursor: human.resources >= 2 ? 'pointer' : 'not-allowed',
             fontFamily: 'monospace',
             fontWeight: 'bold',
@@ -123,11 +123,11 @@ export function ShopView() {
         <button
           onClick={skipShop}
           style={{
-            padding: '8px 16px',
+            padding: '16px 32px',
             background: '#555',
             color: '#fff',
             border: 'none',
-            borderRadius: 6,
+            borderRadius: 9,
             cursor: 'pointer',
             fontFamily: 'monospace',
             fontWeight: 'bold',
@@ -137,7 +137,7 @@ export function ShopView() {
         </button>
       </div>
 
-      <div style={{ marginTop: 20 }}>
+      <div style={{ marginTop: 40 }}>
         <ReelGrid player={human} label="Your Reels" compact />
       </div>
     </div>

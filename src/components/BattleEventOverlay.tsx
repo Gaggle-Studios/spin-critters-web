@@ -24,10 +24,10 @@ function FloatingNumber({ col, text, color, isOpponent }: {
         left: col * COL_WIDTH + COL_WIDTH / 2,
         top: isOpponent ? '25%' : '75%',
         transform: 'translateX(-50%)',
-        fontSize: 18,
+        fontSize: 36,
         fontWeight: 'bold',
         color,
-        textShadow: `0 0 6px ${color}, 0 2px 4px rgba(0,0,0,0.8)`,
+        textShadow: `0 0 12px ${color}, 0 4px 8px rgba(0,0,0,0.8)`,
         pointerEvents: 'none',
         zIndex: 20,
         fontFamily: 'monospace',
@@ -95,13 +95,13 @@ function AttackBanner({ attackerName, defenderName, damage, isKO }: {
         top: '50%',
         left: '50%',
         transform: 'translate(-50%, -50%)',
-        fontSize: 13,
+        fontSize: 26,
         fontWeight: 'bold',
         color: '#fff',
         background: 'rgba(0,0,0,0.75)',
-        border: '1px solid #ffd700',
-        borderRadius: 4,
-        padding: '3px 10px',
+        border: '2px solid #ffd700',
+        borderRadius: 6,
+        padding: '6px 20px',
         pointerEvents: 'none',
         zIndex: 22,
         whiteSpace: 'nowrap',
@@ -109,10 +109,10 @@ function AttackBanner({ attackerName, defenderName, damage, isKO }: {
       }}
     >
       <span style={{ color: '#ffd700' }}>{attackerName}</span>
-      <span style={{ color: '#888', margin: '0 4px' }}>{'\u2192'}</span>
+      <span style={{ color: '#888', margin: '0 8px' }}>{'\u2192'}</span>
       <span style={{ color: isKO ? '#ff4444' : '#eee' }}>{defenderName}</span>
-      <span style={{ color: '#ff4444', marginLeft: 6 }}>-{damage}</span>
-      {isKO && <span style={{ color: '#ff4444', marginLeft: 4 }}>KO!</span>}
+      <span style={{ color: '#ff4444', marginLeft: 12 }}>-{damage}</span>
+      {isKO && <span style={{ color: '#ff4444', marginLeft: 8 }}>KO!</span>}
     </div>
   );
 }
@@ -126,15 +126,15 @@ function CritBanner({ text, color }: { text: string; color: string }) {
         top: '50%',
         left: '50%',
         transform: 'translate(-50%, -50%)',
-        fontSize: 22,
+        fontSize: 44,
         fontWeight: 'bold',
         color,
-        textShadow: `0 0 12px ${color}, 0 0 24px ${color}`,
+        textShadow: `0 0 24px ${color}, 0 0 48px ${color}`,
         pointerEvents: 'none',
         zIndex: 25,
         whiteSpace: 'nowrap',
         fontFamily: 'monospace',
-        letterSpacing: 2,
+        letterSpacing: 4,
       }}
     >
       {text}
@@ -148,19 +148,19 @@ function PhaseLabel({ label }: { label: string }) {
       className="battle-float-up"
       style={{
         position: 'absolute',
-        top: 4,
+        top: 8,
         left: '50%',
         transform: 'translateX(-50%)',
-        fontSize: 11,
+        fontSize: 22,
         fontWeight: 'bold',
         color: '#f1c40f',
-        textShadow: '0 0 6px rgba(241,196,15,0.5)',
+        textShadow: '0 0 12px rgba(241,196,15,0.5)',
         pointerEvents: 'none',
         zIndex: 20,
         whiteSpace: 'nowrap',
         fontFamily: 'monospace',
         textTransform: 'uppercase',
-        letterSpacing: 1,
+        letterSpacing: 2,
       }}
     >
       {label}
@@ -177,10 +177,10 @@ function BattleEndBanner({ winnerName }: { winnerName: string }) {
         top: '50%',
         left: '50%',
         transform: 'translate(-50%, -50%)',
-        fontSize: 26,
+        fontSize: 52,
         fontWeight: 'bold',
         color: '#2ecc71',
-        textShadow: '0 0 12px #2ecc71, 0 0 24px #2ecc71',
+        textShadow: '0 0 24px #2ecc71, 0 0 48px #2ecc71',
         pointerEvents: 'none',
         zIndex: 30,
         whiteSpace: 'nowrap',

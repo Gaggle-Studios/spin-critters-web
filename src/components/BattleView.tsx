@@ -125,15 +125,15 @@ export function BattleView() {
   const spinDisabled = isAnimating || isStoreAnimating;
 
   return (
-    <div style={{ padding: 16, fontFamily: 'monospace', color: '#eee' }}>
+    <div style={{ padding: 32, fontFamily: 'monospace', color: '#eee' }}>
       {/* Wrapper for overlay positioning */}
       <div style={{ position: 'relative' }}>
         {/* Opponent active row */}
-        <div style={{ marginBottom: 8 }}>
-          <div style={{ fontSize: 12, color: '#aaa', marginBottom: 4, fontWeight: 'bold' }}>
+        <div style={{ marginBottom: 16 }}>
+          <div style={{ fontSize: 22, color: '#aaa', marginBottom: 8, fontWeight: 'bold' }}>
             {opponent.name} (Morale: {opponent.morale}) - Resources: {opponent.resources}
           </div>
-          <div style={{ display: 'flex', gap: 3 }}>
+          <div style={{ display: 'flex', gap: 6 }}>
             {Array.from({ length: REEL_WIDTH }, (_, col) => {
               const card = getDisplayCard(opponent.id, col, battle.player2ActiveCards[col]);
               if (isSpinning) {
@@ -161,21 +161,21 @@ export function BattleView() {
         {/* Battle line */}
         <div style={{
           textAlign: 'center',
-          padding: '4px 0',
+          padding: '8px 0',
           color: '#f1c40f',
           fontWeight: 'bold',
-          fontSize: 12,
-          borderTop: '2px solid #f1c40f',
-          borderBottom: '2px solid #f1c40f',
-          margin: '8px 0',
+          fontSize: 22,
+          borderTop: '3px solid #f1c40f',
+          borderBottom: '3px solid #f1c40f',
+          margin: '16px 0',
         }}>
           BATTLE LINE - Spin {battle.currentSpin}/{battle.maxSpins}
           {battle.currentSpin > 10 && ` (OVERTIME! +${battle.currentSpin - 10} dmg)`}
         </div>
 
         {/* Player active row */}
-        <div style={{ marginBottom: 8 }}>
-          <div style={{ display: 'flex', gap: 3 }}>
+        <div style={{ marginBottom: 16 }}>
+          <div style={{ display: 'flex', gap: 6 }}>
             {Array.from({ length: REEL_WIDTH }, (_, col) => {
               const card = getDisplayCard(human.id, col, battle.player1ActiveCards[col]);
               if (isSpinning) {
@@ -213,14 +213,14 @@ export function BattleView() {
       />
 
       {/* Controls */}
-      <div style={{ marginTop: 12, display: 'flex', gap: 8, alignItems: 'center' }}>
+      <div style={{ marginTop: 24, display: 'flex', gap: 16, alignItems: 'center' }}>
         {!battle.isComplete ? (
           !autoPlaying ? (
             <button
               onClick={handleGo}
               style={{
-                padding: '10px 32px',
-                fontSize: 16,
+                padding: '20px 64px',
+                fontSize: 28,
                 fontWeight: 'bold',
                 background: '#3498db',
                 color: '#fff',
@@ -234,14 +234,14 @@ export function BattleView() {
             </button>
           ) : (
             <>
-              <div style={{ fontSize: 13, color: '#f1c40f', fontWeight: 'bold' }}>
+              <div style={{ fontSize: 24, color: '#f1c40f', fontWeight: 'bold' }}>
                 Auto-battling...
               </div>
               <button
                 onClick={handleSkipAll}
                 style={{
-                  padding: '8px 20px',
-                  fontSize: 13,
+                  padding: '16px 40px',
+                  fontSize: 24,
                   fontWeight: 'bold',
                   background: '#e67e22',
                   color: '#fff',
@@ -259,8 +259,8 @@ export function BattleView() {
           <button
             onClick={endBattle}
             style={{
-              padding: '10px 32px',
-              fontSize: 16,
+              padding: '20px 64px',
+              fontSize: 28,
               fontWeight: 'bold',
               background: '#27ae60',
               color: '#fff',
@@ -276,7 +276,7 @@ export function BattleView() {
       </div>
 
       {/* Battle log */}
-      <div style={{ marginTop: 12 }}>
+      <div style={{ marginTop: 24 }}>
         <BattleLog log={battle.log} />
       </div>
     </div>

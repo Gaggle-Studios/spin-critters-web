@@ -9,7 +9,10 @@ export function BattleLog({ log }: BattleLogProps) {
   const endRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    endRef.current?.scrollIntoView({ behavior: 'smooth' });
+    const container = endRef.current?.parentElement;
+    if (container) {
+      container.scrollTop = container.scrollHeight;
+    }
   }, [log.length]);
 
   return (
@@ -17,11 +20,11 @@ export function BattleLog({ log }: BattleLogProps) {
       background: '#0d0d1a',
       border: '1px solid #333',
       borderRadius: 4,
-      padding: 8,
-      height: 180,
+      padding: 16,
+      height: 360,
       overflowY: 'auto',
       fontFamily: 'monospace',
-      fontSize: 11,
+      fontSize: 20,
       color: '#ccc',
     }}>
       <div style={{ fontWeight: 'bold', color: '#aaa', marginBottom: 4 }}>BATTLE LOG</div>

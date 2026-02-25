@@ -61,47 +61,47 @@ function GameOver({ tournament, onPlayAgain }: {
 
   return (
     <div style={{
-      padding: 40,
+      padding: 80,
       fontFamily: 'monospace',
       color: '#eee',
       textAlign: 'center',
       maxWidth: 600,
       margin: '0 auto',
     }}>
-      <h1 style={{ color: isWinner ? '#f1c40f' : '#e74c3c', fontSize: 32 }}>
+      <h1 style={{ color: isWinner ? '#f1c40f' : '#e74c3c', fontSize: 64 }}>
         {isWinner ? 'VICTORY!' : 'GAME OVER'}
       </h1>
-      <p style={{ fontSize: 16, color: '#aaa' }}>
+      <p style={{ fontSize: 32, color: '#aaa' }}>
         {isWinner
           ? 'You defeated all opponents!'
           : `You were eliminated in round ${tournament.round}`}
       </p>
 
-      <div style={{ marginTop: 24, textAlign: 'left' }}>
+      <div style={{ marginTop: 48, textAlign: 'left' }}>
         <h3>Final Standings</h3>
         {alive.map((p, i) => (
-          <div key={p.id} style={{ padding: '4px 0', color: p.isHuman ? '#f1c40f' : '#aaa' }}>
+          <div key={p.id} style={{ padding: '8px 0', color: p.isHuman ? '#f1c40f' : '#aaa' }}>
             #{i + 1} {p.name} - Morale: {p.morale}
           </div>
         ))}
         {tournament.eliminationOrder.map((id, i) => {
           const p = tournament.players.find((pl) => pl.id === id)!;
           return (
-            <div key={id} style={{ padding: '4px 0', color: p.isHuman ? '#e74c3c' : '#555' }}>
+            <div key={id} style={{ padding: '8px 0', color: p.isHuman ? '#e74c3c' : '#555' }}>
               Eliminated #{i + 1}: {p.name}
             </div>
           );
         })}
       </div>
 
-      <div style={{ marginTop: 24 }}>
+      <div style={{ marginTop: 48 }}>
         <h3>Battle History</h3>
         {tournament.matchHistory.map((m, i) => {
           const p1 = tournament.players.find((p) => p.id === m.p1)!;
           const p2 = tournament.players.find((p) => p.id === m.p2)!;
           const winner = tournament.players.find((p) => p.id === m.winner)!;
           return (
-            <div key={i} style={{ padding: '2px 0', fontSize: 11, color: '#888' }}>
+            <div key={i} style={{ padding: '4px 0', fontSize: 22, color: '#888' }}>
               {p1.name} vs {p2.name} - Winner: {winner.name}
             </div>
           );
@@ -111,14 +111,14 @@ function GameOver({ tournament, onPlayAgain }: {
       <button
         onClick={onPlayAgain}
         style={{
-          marginTop: 32,
-          padding: '12px 32px',
-          fontSize: 16,
+          marginTop: 64,
+          padding: '24px 64px',
+          fontSize: 32,
           fontWeight: 'bold',
           background: '#27ae60',
           color: '#fff',
           border: 'none',
-          borderRadius: 8,
+          borderRadius: 12,
           cursor: 'pointer',
           fontFamily: 'monospace',
         }}

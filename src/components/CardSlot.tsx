@@ -19,10 +19,10 @@ function getCardImageUrl(cardId: string, category: string): string | null {
   return `/critters/${cardId}.png`;
 }
 
-const FULL_W = 100;
-const FULL_H = 150;
-const COMPACT_W = 76;
-const COMPACT_H = 110;
+const FULL_W = 200;
+const FULL_H = 300;
+const COMPACT_W = 152;
+const COMPACT_H = 220;
 
 export function CardSlot({ card, definition, isActive, onClick, compact, selected, highlight, shake }: CardSlotProps) {
   const source = card ?? null;
@@ -86,7 +86,7 @@ export function CardSlot({ card, definition, isActive, onClick, compact, selecte
           alignItems: 'center',
           justifyContent: 'center',
           color: '#666',
-          fontSize: 11,
+          fontSize: 22,
           cursor: onClick ? 'pointer' : 'default',
           background: '#1a1a1a',
         }}
@@ -138,7 +138,7 @@ export function CardSlot({ card, definition, isActive, onClick, compact, selecte
             top: '50%',
             left: '50%',
             transform: 'translate(-50%, -50%)',
-            fontSize: 32,
+            fontSize: 64,
             fontWeight: 'bold',
             color: '#f00',
             opacity: 0.7,
@@ -150,14 +150,14 @@ export function CardSlot({ card, definition, isActive, onClick, compact, selecte
 
         {/* Top: Name + Level */}
         <div style={{
-          padding: '3px 4px 2px',
+          padding: '6px 8px 4px',
           background: 'rgba(0,0,0,0.5)',
           flexShrink: 0,
           zIndex: 1,
         }}>
           <div style={{
             fontWeight: 'bold',
-            fontSize: compact ? 8.5 : 10,
+            fontSize: compact ? 17 : 20,
             whiteSpace: 'nowrap',
             overflow: 'hidden',
             textOverflow: 'ellipsis',
@@ -168,7 +168,7 @@ export function CardSlot({ card, definition, isActive, onClick, compact, selecte
           }}>
             <span style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>{name}</span>
             {level > 1 && (
-              <span style={{ fontSize: compact ? 7 : 8, color: '#FFD700', flexShrink: 0, marginLeft: 2 }}>
+              <span style={{ fontSize: compact ? 14 : 16, color: '#FFD700', flexShrink: 0, marginLeft: 4 }}>
                 L{level}
               </span>
             )}
@@ -201,10 +201,10 @@ export function CardSlot({ card, definition, isActive, onClick, compact, selecte
         {/* Keyword badges */}
         {hasKeywords && (
           <div style={{
-            padding: compact ? '1px 2px' : '2px 3px',
+            padding: compact ? '2px 4px' : '4px 6px',
             display: 'flex',
             flexWrap: 'wrap',
-            gap: compact ? 1 : 2,
+            gap: compact ? 2 : 4,
             background: 'rgba(0,0,0,0.55)',
             flexShrink: 0,
             zIndex: 1,
@@ -217,9 +217,9 @@ export function CardSlot({ card, definition, isActive, onClick, compact, selecte
                   style={{
                     background: info?.color || '#666',
                     color: '#fff',
-                    padding: compact ? '0 2px' : '0 3px',
-                    borderRadius: 2,
-                    fontSize: compact ? 6.5 : 7.5,
+                    padding: compact ? '0 4px' : '0 6px',
+                    borderRadius: 4,
+                    fontSize: compact ? 13 : 15,
                     fontWeight: 'bold',
                     whiteSpace: 'nowrap',
                     textShadow: '0 1px 1px rgba(0,0,0,0.6)',
@@ -239,12 +239,12 @@ export function CardSlot({ card, definition, isActive, onClick, compact, selecte
 
         {/* Bottom: Attack / Health */}
         <div style={{
-          padding: '3px 4px',
+          padding: '6px 8px',
           background: 'rgba(0,0,0,0.5)',
           display: 'flex',
           justifyContent: 'space-between',
           fontWeight: 'bold',
-          fontSize: compact ? 9.5 : 11,
+          fontSize: compact ? 19 : 22,
           flexShrink: 0,
           zIndex: 1,
         }}>
