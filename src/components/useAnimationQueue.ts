@@ -3,7 +3,7 @@ import type { BattleEvent } from '../engine/types.ts';
 
 function getEventDelay(event: BattleEvent): number {
   switch (event.type) {
-    case 'spin-result': return 600;
+    case 'spin-result': return 1600;
     case 'attack': return 500;
     case 'thorns': return 400;
     case 'venomous': return 300;

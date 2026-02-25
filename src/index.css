@@ -67,3 +67,19 @@ button:hover:not(:disabled) {
 .battle-crit-flash {
   animation: critFlash 0.8s ease-in-out forwards;
 }
+
+/* Reel spin animation */
+@keyframes reelSpin {
+  0%   { transform: translateY(0); }
+  100% { transform: translateY(var(--reel-offset)); }
+}
+
+@keyframes reelLand {
+  0%   { transform: scale(1.08); box-shadow: 0 0 12px #FFD700; }
+  50%  { transform: scale(0.97); }
+  100% { transform: scale(1); box-shadow: 0 0 8px #FFD700; }
+}
+
+.reel-landed {
+  animation: reelLand 0.25s ease-out;
+}

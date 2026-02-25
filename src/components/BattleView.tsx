@@ -4,6 +4,7 @@ import { ReelGrid } from './ReelGrid.tsx';
 import { BattleLog } from './BattleLog.tsx';
 import { REEL_WIDTH } from '../engine/constants.ts';
 import { CardSlot } from './CardSlot.tsx';
+import { ReelSpinner } from './ReelSpinner.tsx';
 import { BattleEventOverlay, getCardEffects } from './BattleEventOverlay.tsx';
 import { useAnimationQueue } from './useAnimationQueue.ts';
 import { useProgressiveDisplay } from './useProgressiveDisplay.ts';
@@ -37,6 +38,7 @@ export function BattleView() {
   const opponent = battle.player2;
   const humanId = tournament.humanPlayerId;
 
+  const isSpinning = currentEvent?.type === 'spin-result';
   const { highlightCols, shakeCols } = getCardEffects(currentEvent, humanId);
 
   const getHighlight = (playerId: string, col: number): string | undefined => {
@@ -64,15 +66,27 @@ export function BattleView() {
             {opponent.name} (Morale: {opponent.morale}) - Resources: {opponent.resources}
           </div>
           <div style={{ display: 'flex', gap: 3 }}>
-            {Array.from({ length: REEL_WIDTH }, (_, col) => (
-              <CardSlot
-                key={col}
-                card={getDisplayCard(opponent.id, col, battle.player2ActiveCards[col])}
-                isActive
-                highlight={getHighlight(opponent.id, col)}
-                shake={getShake(opponent.id, col)}
-              />
-            ))}
+            {Array.from({ length: REEL_WIDTH }, (_, col) => {
+              const card = getDisplayCard(opponent.id, col, battle.player2ActiveCards[col]);
+              if (isSpinning) {
+                return (
+                  <ReelSpinner
+                    key={`spin-${battle.currentSpin}-opp-${col}`}
+                    resultCard={card}
+                    col={col}
+                  />
+                );
+              }
+              return (
+                <CardSlot
+                  key={col}
+                  card={card}
+                  isActive
+                  highlight={getHighlight(opponent.id, col)}
+                  shake={getShake(opponent.id, col)}
+                />
+              );
+            })}
           </div>
         </div>
 
@@ -94,15 +108,27 @@ export function BattleView() {
         {/* Player active row */}
         <div style={{ marginBottom: 8 }}>
           <div style={{ display: 'flex', gap: 3 }}>
-            {Array.from({ length: REEL_WIDTH }, (_, col) => (
-              <CardSlot
-                key={col}
-                card={getDisplayCard(human.id, col, battle.player1ActiveCards[col])}
-                isActive
-                highlight={getHighlight(human.id, col)}
-                shake={getShake(human.id, col)}
-              />
-            ))}
+            {Array.from({ length: REEL_WIDTH }, (_, col) => {
+              const card = getDisplayCard(human.id, col, battle.player1ActiveCards[col]);
+              if (isSpinning) {
+                return (
+                  <ReelSpinner
+                    key={`spin-${battle.currentSpin}-plr-${col}`}
+                    resultCard={card}
+                    col={col}
+                  />
+                );
+              }
+              return (
+                <CardSlot
+                  key={col}
+                  card={card}
+                  isActive
+                  highlight={getHighlight(human.id, col)}
+                  shake={getShake(human.id, col)}
+                />
+              );
+            })}
           </div>
         </div>
 
