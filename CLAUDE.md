@@ -580,3 +580,7 @@ Before considering this done, the following should work end to end:
 - [ ] Game ends when only 1 player remains
 - [ ] "Play Again" resets everything
 - [ ] At least 5 keywords are functional in battle (Produce, Fast, Slow, Thorns, Regenerate)
+
+## Multiplayer
+
+See [NETWORKING.md](./NETWORKING.md) for the authoritative server architecture, protocol types, and implementation plan.
