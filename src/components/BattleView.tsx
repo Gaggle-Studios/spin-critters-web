@@ -8,6 +8,8 @@ import { ReelSpinner } from './ReelSpinner.tsx';
 import { BattleEventOverlay, getCardEffects } from './BattleEventOverlay.tsx';
 import { useAnimationQueue } from './useAnimationQueue.ts';
 import { useProgressiveDisplay } from './useProgressiveDisplay.ts';
+import { useBattleSounds } from '../audio/useBattleSounds.ts';
+import { playSfx } from '../audio/sfx.ts';
 
 export function BattleView() {
   const tournament = useGameStore((s) => s.tournament);
@@ -21,6 +23,9 @@ export function BattleView() {
 
   // Progressive HP display: cards show HP matching current animation frame
   const { getDisplayCard } = useProgressiveDisplay(isAnimating, pendingEvents, eventIndex);
+
+  // Play sounds for battle events
+  useBattleSounds(currentEvent);
 
   // Auto-battle state — reset when a new battle starts
   const [autoPlaying, setAutoPlaying] = useState(false);
@@ -71,6 +76,7 @@ export function BattleView() {
   }, [isAnimating, isStoreAnimating, spinAction]);
 
   const handleGo = useCallback(() => {
+    playSfx('battleStart');
     setAutoPlaying(true);
     autoPlayingRef.current = true;
     spinAction();

@@ -3,6 +3,7 @@ import type { Biome } from '../engine/types.ts';
 import { BIOME_COLORS, MAX_SAME_BIOME_CRITTERS, REEL_WIDTH } from '../engine/constants.ts';
 import { useGameStore } from '../store/gameStore.ts';
 import { CardSlot } from './CardSlot.tsx';
+import { playSfx } from '../audio/sfx.ts';
 
 const BIOMES: Biome[] = ['Red', 'Blue', 'Cream', 'Brown', 'Green'];
 
@@ -23,10 +24,12 @@ export function CritterSelect() {
   function toggleCritter(cardId: string) {
     if (selected.includes(cardId)) {
       setSelected(selected.filter((id) => id !== cardId));
+      playSfx('deselect');
     } else if (selected.length < 3) {
       const critter = allCritters.find((c) => c.cardId === cardId)!;
       if ((biomeCounts[critter.biome] || 0) < MAX_SAME_BIOME_CRITTERS) {
         setSelected([...selected, cardId]);
+        playSfx('click');
       }
     }
   }
@@ -40,6 +43,7 @@ export function CritterSelect() {
 
   function placeInColumn(col: number) {
     if (placements.includes(col)) return;
+    playSfx('place');
     const newPlacements = [...placements, col];
     setPlacements(newPlacements);
 

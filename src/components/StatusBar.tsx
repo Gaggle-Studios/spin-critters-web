@@ -1,4 +1,6 @@
+import { useState } from 'react';
 import type { PlayerState, TournamentState } from '../engine/types.ts';
+import { isMuted, setMuted } from '../audio/sfx.ts';
 
 interface StatusBarProps {
   tournament: TournamentState;
@@ -6,9 +8,16 @@ interface StatusBarProps {
 
 export function StatusBar({ tournament }: StatusBarProps) {
   const human = tournament.players.find((p) => p.id === tournament.humanPlayerId);
+  const [muted, setMutedState] = useState(isMuted());
   if (!human) return null;
 
   const moralePct = (human.morale / 50) * 100;
+
+  function toggleMute() {
+    const next = !muted;
+    setMuted(next);
+    setMutedState(next);
+  }
 
   return (
     <div style={{
@@ -55,6 +64,17 @@ export function StatusBar({ tournament }: StatusBarProps) {
         <div style={{ color: '#aaa' }}>
           Players alive: {tournament.players.filter((p) => p.morale > 0).length}/{tournament.players.length}
         </div>
+        <button
+          onClick={toggleMute}
+          style={{
+            background: 'none', border: '1px solid #555', borderRadius: 4,
+            color: '#aaa', cursor: 'pointer', fontFamily: 'monospace',
+            fontSize: 14, padding: '2px 8px',
+          }}
+          title={muted ? 'Unmute' : 'Mute'}
+        >
+          {muted ? 'Sound OFF' : 'Sound ON'}
+        </button>
       </div>
     </div>
   );

@@ -7,6 +7,8 @@ import { ReelSpinner } from './ReelSpinner.tsx';
 import { BattleEventOverlay, getCardEffects } from './BattleEventOverlay.tsx';
 import { useAnimationQueue } from './useAnimationQueue.ts';
 import { useProgressiveDisplay } from './useProgressiveDisplay.ts';
+import { useBattleSounds } from '../audio/useBattleSounds.ts';
+import { playSfx } from '../audio/sfx.ts';
 import { BIOME_COLORS, MAX_SAME_BIOME_CRITTERS, REEL_WIDTH, SHOP_COST } from '../engine/constants.ts';
 import type { Biome, CardDefinition, PlayerState } from '../engine/types.ts';
 import type { SanitizedGameState, SanitizedPlayerState } from '../shared/protocol.ts';
@@ -303,6 +305,9 @@ function MPBattleView({ state, playerId, pendingEvents, isStoreAnimating, finish
   const { currentEvent, eventIndex, isAnimating, startAnimation, skipAnimation } = useAnimationQueue(finishAnimation);
   const { getDisplayCard } = useProgressiveDisplay(isAnimating, pendingEvents, eventIndex);
 
+  // Play sounds for battle events
+  useBattleSounds(currentEvent);
+
   // Auto-battle state
   const [autoPlaying, setAutoPlaying] = useState(false);
   const autoPlayingRef = useRef(false);
@@ -366,6 +371,7 @@ function MPBattleView({ state, playerId, pendingEvents, isStoreAnimating, finish
   }, [isWaitingForMe, isAnimating, isStoreAnimating, mpSpin]);
 
   const handleGo = useCallback(() => {
+    playSfx('battleStart');
     setAutoPlaying(true);
     autoPlayingRef.current = true;
     mpSpin();

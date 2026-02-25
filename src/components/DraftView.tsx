@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { REEL_WIDTH } from '../engine/constants.ts';
 import { useGameStore } from '../store/gameStore.ts';
 import { CardSlot } from './CardSlot.tsx';
+import { playSfx } from '../audio/sfx.ts';
 
 export function DraftView() {
   const tournament = useGameStore((s) => s.tournament);
@@ -20,6 +21,7 @@ export function DraftView() {
 
   function handleColumnClick(col: number) {
     if (selectedCard === null) return;
+    playSfx('place');
     draftPick(selectedCard, col);
     setSelectedCard(null);
   }
@@ -37,7 +39,7 @@ export function DraftView() {
           <CardSlot
             key={idx}
             definition={card}
-            onClick={() => setSelectedCard(idx)}
+            onClick={() => { playSfx('click'); setSelectedCard(idx); }}
             selected={selectedCard === idx}
           />
         ))}

@@ -3,6 +3,7 @@ import { useGameStore } from '../store/gameStore.ts';
 import { SHOP_COST, REEL_WIDTH } from '../engine/constants.ts';
 import { ReelGrid } from './ReelGrid.tsx';
 import { CardSlot } from './CardSlot.tsx';
+import { playSfx } from '../audio/sfx.ts';
 
 export function ShopView() {
   const tournament = useGameStore((s) => s.tournament);
@@ -17,8 +18,14 @@ export function ShopView() {
 
   function handleColumnClick(col: number) {
     if (selectedCard === null) return;
+    playSfx('purchase');
     buyCard(selectedCard, col);
     setSelectedCard(null);
+  }
+
+  function handleReroll() {
+    playSfx('reroll');
+    rerollShop();
   }
 
   return (
@@ -37,7 +44,7 @@ export function ShopView() {
               <div style={{ opacity: canAfford ? 1 : 0.4 }}>
                 <CardSlot
                   definition={card}
-                  onClick={() => canAfford && setSelectedCard(idx)}
+                  onClick={() => { if (canAfford) { playSfx('click'); setSelectedCard(idx); } }}
                   selected={selectedCard === idx}
                 />
               </div>
@@ -98,7 +105,7 @@ export function ShopView() {
 
       <div style={{ marginTop: 16, display: 'flex', gap: 8 }}>
         <button
-          onClick={rerollShop}
+          onClick={handleReroll}
           disabled={human.resources < 2}
           style={{
             padding: '8px 16px',
