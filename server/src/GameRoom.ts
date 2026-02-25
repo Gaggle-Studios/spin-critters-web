@@ -6,9 +6,9 @@ import type {
   ShopPack,
   BattleEvent,
   GamePhase,
-} from '../../src/engine/types.ts';
-import type { ClientMessage, ServerMessage, LobbyPlayer, RoomConfig, SanitizedGameState } from '../../src/shared/protocol.ts';
-import { DEFAULT_ROOM_CONFIG, SPIN_AUTO_TIMEOUT_MS } from '../../src/shared/protocol.ts';
+} from './engine/types.ts';
+import type { ClientMessage, ServerMessage, LobbyPlayer, RoomConfig, SanitizedGameState } from './shared/protocol.ts';
+import { DEFAULT_ROOM_CONFIG, SPIN_AUTO_TIMEOUT_MS } from './shared/protocol.ts';
 import {
   STARTING_MORALE,
   INITIAL_REEL_HEIGHT,
@@ -18,10 +18,10 @@ import {
   SHOP_COST,
   EVOLUTION_TABLE,
   MAX_REEL_HEIGHT,
-} from '../../src/engine/constants.ts';
-import { loadCritters, generateCardPool, createCardInstance, JUNK_CARD } from '../../src/engine/cards.ts';
-import { generateShopPack, generateDraftPacks } from '../../src/engine/shop.ts';
-import { initBattle, executeSpin, applyBattleResult, reviveAllCards } from '../../src/engine/battle.ts';
+} from './engine/constants.ts';
+import { loadCritters, generateCardPool, createCardInstance, JUNK_CARD } from './engine/cards.ts';
+import { generateShopPack, generateDraftPacks } from './engine/shop.ts';
+import { initBattle, executeSpin, applyBattleResult, reviveAllCards } from './engine/battle.ts';
 import {
   createAIPlayer,
   aiSelectCritters,
@@ -30,7 +30,7 @@ import {
   aiPlaceCard,
   aiFillWithJunk,
   aiShopDecision,
-} from '../../src/engine/ai.ts';
+} from './engine/ai.ts';
 import { sanitizeStateForPlayer } from './StateSanitizer.ts';
 import { AI_ACTION_DELAY_MS, SPIN_READY_TIMEOUT_MS } from './config.ts';
 
@@ -893,7 +893,7 @@ export class GameRoom {
     }
   }
 
-  private sendError(playerId: string, code: import('../../src/shared/protocol.ts').ErrorCode, message: string): void {
+  private sendError(playerId: string, code: import('./shared/protocol.ts').ErrorCode, message: string): void {
     this.sendToPlayer(playerId, { type: 'error', code, message });
   }
 

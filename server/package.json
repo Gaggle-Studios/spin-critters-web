@@ -8,10 +8,10 @@
     "start": "tsx src/index.ts"
   },
   "dependencies": {
-    "socket.io": "^4.8.1"
+    "socket.io": "^4.8.1",
+    "tsx": "^4.19.4"
   },
   "devDependencies": {
-    "tsx": "^4.19.4",
     "typescript": "~5.9.3",
     "@types/node": "^22.15.0"
   }

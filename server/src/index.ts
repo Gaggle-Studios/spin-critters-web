@@ -2,7 +2,7 @@ import { createServer } from 'node:http';
 import { Server } from 'socket.io';
 import { RoomManager } from './RoomManager.ts';
 import { SERVER_PORT, CORS_ORIGINS } from './config.ts';
-import type { ClientMessage, ServerMessage } from '../../src/shared/protocol.ts';
+import type { ClientMessage, ServerMessage } from './shared/protocol.ts';
 
 const httpServer = createServer((_req, res) => {
   // Health check endpoint

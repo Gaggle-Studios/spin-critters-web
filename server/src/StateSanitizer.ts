@@ -1,6 +1,6 @@
-import type { TournamentState, PlayerState, CardInstance } from '../../src/engine/types.ts';
-import type { SanitizedGameState, SanitizedPlayerState } from '../../src/shared/protocol.ts';
-import { REEL_WIDTH } from '../../src/engine/constants.ts';
+import type { TournamentState, PlayerState, CardInstance } from './engine/types.ts';
+import type { SanitizedGameState, SanitizedPlayerState } from './shared/protocol.ts';
+import { REEL_WIDTH } from './engine/constants.ts';
 
 function getColumnCardCounts(player: PlayerState): number[] {
   const counts: number[] = [];
@@ -18,9 +18,9 @@ function getColumnCardCounts(player: PlayerState): number[] {
 export function sanitizeStateForPlayer(
   state: TournamentState,
   viewingPlayerId: string,
-  playerDraftPacks: Map<string, import('../../src/engine/types.ts').CardDefinition[][]>,
+  playerDraftPacks: Map<string, import('./engine/types.ts').CardDefinition[][]>,
   playerDraftIndex: Map<string, number>,
-  playerShopPacks: Map<string, import('../../src/engine/types.ts').ShopPack>,
+  playerShopPacks: Map<string, import('./engine/types.ts').ShopPack>,
 ): SanitizedGameState {
   const sanitizedPlayers: SanitizedPlayerState[] = state.players.map((player) => {
     const isYou = player.id === viewingPlayerId;

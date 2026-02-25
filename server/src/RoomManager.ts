@@ -1,15 +1,17 @@
 import type { Server, Socket } from 'socket.io';
 import { GameRoom } from './GameRoom.ts';
 import { STALE_ROOM_CLEANUP_MS } from './config.ts';
-import type { RoomConfig, RoomInfo, LobbyPlayer } from '../../src/shared/protocol.ts';
+import type { RoomConfig, RoomInfo, LobbyPlayer } from './shared/protocol.ts';
 import crypto from 'node:crypto';
 
 export class RoomManager {
   private rooms: Map<string, GameRoom> = new Map();
   private playerRooms: Map<string, string> = new Map(); // playerId -> roomId
   private cleanupInterval: ReturnType<typeof setInterval>;
+  private io: Server;
 
-  constructor(private io: Server) {
+  constructor(io: Server) {
+    this.io = io;
     // Clean up stale rooms every minute
     this.cleanupInterval = setInterval(() => this.cleanupStaleRooms(), 60_000);
   }

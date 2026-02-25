@@ -1,0 +1,501 @@
+{
+  "critters": [
+    {
+      "cardId": "000001",
+      "setId": "001",
+      "name": "Fiammor",
+      "rarity": "None",
+      "category": "Critter",
+      "description": "Bug that eats lava and uses heat to defend itself.",
+      "biome": "Red",
+      "archetype": "Insect",
+      "attack": 4,
+      "health": 30,
+      "loyalty": 10
+    },
+    {
+      "cardId": "000002",
+      "setId": "001",
+      "name": "Hareed",
+      "rarity": "None",
+      "category": "Critter",
+      "description": "Burrows into shifting dunes, super fast.",
+      "biome": "Red",
+      "archetype": "Mammal",
+      "attack": 4,
+      "health": 30,
+      "loyalty": 10
+    },
+    {
+      "cardId": "000003",
+      "setId": "001",
+      "name": "Kurzharn",
+      "rarity": "None",
+      "category": "Critter",
+      "description": "Dark Obsidian looking reptile with thick skin.",
+      "biome": "Red",
+      "archetype": "Reptile",
+      "attack": 4,
+      "health": 30,
+      "loyalty": 10
+    },
+    {
+      "cardId": "000004",
+      "setId": "001",
+      "name": "Vulcana",
+      "rarity": "None",
+      "category": "Critter",
+      "description": "LARGE Bird that lives near fiery mountains, can't see at night.",
+      "biome": "Red",
+      "archetype": "Avian",
+      "attack": 4,
+      "health": 30,
+      "loyalty": 10
+    },
+    {
+      "cardId": "000005",
+      "setId": "001",
+      "name": "Saharidon",
+      "rarity": "None",
+      "category": "Critter",
+      "description": "Chonky oasis dwelling creature that lives in pools of water.",
+      "biome": "Red",
+      "archetype": "Aquatic",
+      "attack": 4,
+      "health": 30,
+      "loyalty": 10
+    },
+    {
+      "cardId": "000006",
+      "setId": "001",
+      "name": "Marisect",
+      "rarity": "None",
+      "category": "Critter",
+      "description": "A gossamer winged swimmer with bright colors.",
+      "biome": "Blue",
+      "archetype": "Insect",
+      "attack": 4,
+      "health": 30,
+      "loyalty": 10
+    },
+    {
+      "cardId": "000007",
+      "setId": "001",
+      "name": "Oceanicet",
+      "rarity": "None",
+      "category": "Critter",
+      "description": "Deep ocean dwelling water mannal with webeed limbs, can also walk on land.",
+      "biome": "Blue",
+      "archetype": "Mammal",
+      "attack": 4,
+      "health": 30,
+      "loyalty": 10
+    },
+    {
+      "cardId": "000008",
+      "setId": "001",
+      "name": "Skyvern",
+      "rarity": "None",
+      "category": "Critter",
+      "description": "Lives way above the clouds, sharp talons like a mini water-whelp.",
+      "biome": "Blue",
+      "archetype": "Reptile",
+      "attack": 4,
+      "health": 30,
+      "loyalty": 10
+    },
+    {
+      "cardId": "000009",
+      "setId": "001",
+      "name": "Aerornith",
+      "rarity": "None",
+      "category": "Critter",
+      "description": "Large wingspan bird never needs to touch the ground. Keen eye-sight.",
+      "biome": "Blue",
+      "archetype": "Avian",
+      "attack": 4,
+      "health": 30,
+      "loyalty": 10
+    },
+    {
+      "cardId": "000010",
+      "setId": "001",
+      "name": "Aquarai",
+      "rarity": "None",
+      "category": "Critter",
+      "description": "Iridescent scales, long, semi-translucent. Moves fast through water, has gills. ",
+      "biome": "Blue",
+      "archetype": "Aquatic",
+      "attack": 4,
+      "health": 30,
+      "loyalty": 10
+    },
+    {
+      "cardId": "000011",
+      "setId": "001",
+      "name": "Qannuc",
+      "rarity": "None",
+      "category": "Critter",
+      "description": "Thick exoskeleton anti-freeze like chemicals in it's blood with sharp mandibles.",
+      "biome": "Cream",
+      "archetype": "Insect",
+      "attack": 4,
+      "health": 30,
+      "loyalty": 10
+    },
+    {
+      "cardId": "000012",
+      "setId": "001",
+      "name": "Taivassu",
+      "rarity": "None",
+      "category": "Critter",
+      "description": "Magestic mammal, long legs, thick coat, keen smell to sniff vegetation in snow.",
+      "biome": "Cream",
+      "archetype": "Mammal",
+      "attack": 4,
+      "health": 30,
+      "loyalty": 10
+    },
+    {
+      "cardId": "000013",
+      "setId": "001",
+      "name": "Kivik",
+      "rarity": "None",
+      "category": "Critter",
+      "description": "Razor sharp claws, armored hide, powerful jaws, cliffhanger.",
+      "biome": "Cream",
+      "archetype": "Reptile",
+      "attack": 4,
+      "health": 30,
+      "loyalty": 10
+    },
+    {
+      "cardId": "000014",
+      "setId": "001",
+      "name": "Jaasi",
+      "rarity": "None",
+      "category": "Critter",
+      "description": "Snowy white feathers, sharp talons and beak, suited for cold climates.",
+      "biome": "Cream",
+      "archetype": "Avian",
+      "attack": 4,
+      "health": 30,
+      "loyalty": 10
+    },
+    {
+      "cardId": "000015",
+      "setId": "001",
+      "name": "Aqsiktac",
+      "rarity": "None",
+      "category": "Critter",
+      "description": "A large cat with claws that gleam like sapphires.",
+      "biome": "Cream",
+      "archetype": "Aquatic",
+      "attack": 4,
+      "health": 30,
+      "loyalty": 10
+    },
+    {
+      "cardId": "000016",
+      "setId": "001",
+      "name": "Varvas",
+      "rarity": "None",
+      "category": "Critter",
+      "description": "Razor sharp claws, antennae to navigate in dark, can climb, chew through rocks.",
+      "biome": "Brown",
+      "archetype": "Insect",
+      "attack": 4,
+      "health": 30,
+      "loyalty": 10
+    },
+    {
+      "cardId": "000017",
+      "setId": "001",
+      "name": "Grottohund",
+      "rarity": "None",
+      "category": "Critter",
+      "description": "Tunneling mammal with good sense of smell, dense, small.",
+      "biome": "Brown",
+      "archetype": "Mammal",
+      "attack": 4,
+      "health": 30,
+      "loyalty": 10
+    },
+    {
+      "cardId": "000018",
+      "setId": "001",
+      "name": "Suomu",
+      "rarity": "None",
+      "category": "Critter",
+      "description": "Retractable claws, dark scales, forked tongue, sharp teeth.",
+      "biome": "Brown",
+      "archetype": "Reptile",
+      "attack": 4,
+      "health": 30,
+      "loyalty": 10
+    },
+    {
+      "cardId": "000019",
+      "setId": "001",
+      "name": "Darter",
+      "rarity": "None",
+      "category": "Critter",
+      "description": "Small agile bird, sturdy wings, brownish, can camouflage with dark surfaces, ",
+      "biome": "Brown",
+      "archetype": "Avian",
+      "attack": 4,
+      "health": 30,
+      "loyalty": 10
+    },
+    {
+      "cardId": "000020",
+      "setId": "001",
+      "name": "Duskscale",
+      "rarity": "None",
+      "category": "Critter",
+      "description": "Related to the Suomu, by built for water, long fins and flowing. Glowing eyes.",
+      "biome": "Brown",
+      "archetype": "Aquatic",
+      "attack": 4,
+      "health": 30,
+      "loyalty": 10
+    },
+    {
+      "cardId": "000021",
+      "setId": "001",
+      "name": "Densarvi",
+      "rarity": "None",
+      "category": "Critter",
+      "description": "Bright green, blends in, can fly short distances, horned for defense. Eats nectar.",
+      "biome": "Green",
+      "archetype": "Insect",
+      "attack": 4,
+      "health": 30,
+      "loyalty": 10
+    },
+    {
+      "cardId": "000022",
+      "setId": "001",
+      "name": "Ardob",
+      "rarity": "None",
+      "category": "Critter",
+      "description": "Bear like creature, forager, thick brown fur, elongated face.",
+      "biome": "Green",
+      "archetype": "Mammal",
+      "attack": 4,
+      "health": 30,
+      "loyalty": 10
+    },
+    {
+      "cardId": "000023",
+      "setId": "001",
+      "name": "Verdilo",
+      "rarity": "None",
+      "category": "Critter",
+      "description": "Bright colord lizard like creature large expressive eyes, speedy.",
+      "biome": "Green",
+      "archetype": "Reptile",
+      "attack": 4,
+      "health": 30,
+      "loyalty": 10
+    },
+    {
+      "cardId": "000024",
+      "setId": "001",
+      "name": "Azuquila",
+      "rarity": "None",
+      "category": "Critter",
+      "description": "Blue/Green Plummage, fly at high speeds, sharp eyesight, social bird lives in group.",
+      "biome": "Green",
+      "archetype": "Avian",
+      "attack": 4,
+      "health": 30,
+      "loyalty": 10
+    },
+    {
+      "cardId": "000025",
+      "setId": "001",
+      "name": "Fluvinix",
+      "rarity": "None",
+      "category": "Critter",
+      "description": "Sleek long flatttened head, deep rich greenish scales sharpe teeth, underbite.",
+      "biome": "Green",
+      "archetype": "Aquatic",
+      "attack": 4,
+      "health": 30,
+      "loyalty": 10
+    }
+  ],
+  "keywords": [
+    {
+      "id": 0,
+      "name": "Produce",
+      "description": "Produces resource"
+    },
+    {
+      "id": 1,
+      "name": "Steal",
+      "description": "Steals resources from the opponent if possible"
+    },
+    {
+      "id": 2,
+      "name": "Fast",
+      "description": "Activates in a phase that takes place before normal combat"
+    },
+    {
+      "id": 3,
+      "name": "Slow",
+      "description": "Activates in a phase that takes place after normal combat"
+    },
+    {
+      "id": 4,
+      "name": "Strength",
+      "description": "Does extra damage to critters of a certain type"
+    },
+    {
+      "id": 5,
+      "name": "Weakness",
+      "description": "Takes extra damage from critters of a certain type"
+    },
+    {
+      "id": 6,
+      "name": "Elusive",
+      "description": "Ignores X damage events during the battle."
+    },
+    {
+      "id": 7,
+      "name": "Immune",
+      "description": "Immune to damage from critters of a certain type"
+    },
+    {
+      "id": 8,
+      "name": "Venomous",
+      "description": "Puts an number of poison counters on their target if they damage them, any time a card activates they suffer damage relative to the number of poison counters. After suffering damage the poison counter is reduced by 1. "
+    },
+    {
+      "id": 9,
+      "name": "Poisonous",
+      "description": "Puts a number of poison counters on their attacker if they get hurt, any time a card activates they suffer damage relative to the number of poison counters. After suffering damage the poison counter is reduced by 1. "
+    },
+    {
+      "id": 10,
+      "name": "Thorns",
+      "description": "Critter deals a number of damage if they are injured/damaged"
+    },
+    {
+      "id": 11,
+      "name": "Angry",
+      "description": "Critter deals more damage if they are injured/damaged"
+    },
+    {
+      "id": 12,
+      "name": "Regenerate",
+      "description": "Heals itself a certain amount"
+    },
+    {
+      "id": 13,
+      "name": "Powerful",
+      "description": "Critters who suffer powerful damage become stunned fro certain amount of spins"
+    },
+    {
+      "id": 14,
+      "name": "Healing",
+      "description": "Heals adjacent critters a certain amount"
+    },
+    {
+      "id": 15,
+      "name": "Bolster",
+      "description": "Critter will amplify adjacent critter damage by a certain amount"
+    },
+    {
+      "id": 16,
+      "name": "Hibernate",
+      "description": "Critter is dormant until it receives an amount of damage each battle"
+    },
+    {
+      "id": 17,
+      "name": "Unshakeable",
+      "description": "Critter is immune to stun effects"
+    },
+    {
+      "id": 18,
+      "name": "Trapper",
+      "description": "Enemies damaged by this critter do not spin for X spins"
+    },
+    {
+      "id": 19,
+      "name": "Slippery",
+      "description": "Critter can't be trapped by trapper critters"
+    },
+    {
+      "id": 20,
+      "name": "Last Stand",
+      "description": "When card is KO'd it gets a defined keyword mentioned in the card "
+    },
+    {
+      "id": 21,
+      "name": "Loner",
+      "description": "Increased stats if this critter is the last one alive"
+    },
+    {
+      "id": 22,
+      "name": "Multicolored",
+      "description": "This critter counts as being part of multiple biomes/colors"
+    },
+    {
+      "id": 23,
+      "name": "Colorless",
+      "description": "The critter does not count as having a color"
+    },
+    {
+      "id": 24,
+      "name": "Growth",
+      "description": "Gain amount of ??? every round it survives"
+    },
+    {
+      "id": 25,
+      "name": "Pacifist",
+      "description": "Gains amount of health if no critter has been KO'd this round"
+    },
+    {
+      "id": 26,
+      "name": "Hoarder",
+      "description": ""
+    },
+    {
+      "id": 27,
+      "name": "Parasitic",
+      "description": "Absorbs an amount of health from adjacent critters"
+    },
+    {
+      "id": 28,
+      "name": "Defender",
+      "description": "Damage to adjacent cards are directed to this critter"
+    },
+    {
+      "id": 29,
+      "name": "Transient",
+      "description": "Critter will KO after an amount of activations"
+    },
+    {
+      "id": 30,
+      "name": "Mulligan",
+      "description": "The player has a once per round option to roll again if critter is drawn"
+    },
+    {
+      "id": 31,
+      "name": "Guarded",
+      "description": "Damage is directed to an adjacent card"
+    },
+    {
+      "id": 32,
+      "name": "Timeless",
+      "description": "Damage to this card is persistent in matches, when knocked out it is removed from the game"
+    },
+    {
+      "id": 33,
+      "name": "Hinder",
+      "description": "Attackers damaging this card are locked in place for X spins."
+    }
+  ]
+}
