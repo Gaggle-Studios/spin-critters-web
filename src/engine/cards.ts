@@ -254,6 +254,7 @@ export function loadCritters(): CardDefinition[] {
 }
 
 export function generateCardPool(): CardDefinition[] {
+  nextId = 100; // Reset so IDs always match image filenames (000100-000189)
   const allies = generateAllies();
   const locations = generateLocations();
   const relics = generateRelics();
