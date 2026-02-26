@@ -1,8 +1,18 @@
+import { useState } from 'react';
 import { useGameStore } from '../store/gameStore.ts';
+import { APP_VERSION } from '../version.ts';
+import { HowToPlay } from './HowToPlay.tsx';
 
 export function MainMenu() {
   const startSinglePlayer = useGameStore((s) => s.startSinglePlayer);
   const startMultiplayer = useGameStore((s) => s.startMultiplayer);
+  const setTutorialEnabled = useGameStore((s) => s.setTutorialEnabled);
+  const [showHowToPlay, setShowHowToPlay] = useState(false);
+
+  function handleStartWithTutorial() {
+    setTutorialEnabled(true);
+    startSinglePlayer();
+  }
 
   return (
     <div style={{
@@ -12,7 +22,7 @@ export function MainMenu() {
       flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'center',
-            color: '#eee',
+      color: '#eee',
     }}>
       <h1 className="font-display" style={{
         fontSize: 56,
@@ -23,27 +33,18 @@ export function MainMenu() {
       }}>
         SPIN CRITTERS
       </h1>
-      <p style={{ color: '#888', fontSize: 14, marginBottom: 48, letterSpacing: 2 }}>
+      <p style={{ color: '#888', fontSize: 14, marginBottom: 8, letterSpacing: 2 }}>
         Slot Machine Card Battler
+      </p>
+      <p style={{ color: '#555', fontSize: 11, marginBottom: 48 }}>
+        {APP_VERSION}
       </p>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: 16, minWidth: 280 }}>
         <button
           onClick={startSinglePlayer}
           className="font-display"
-          style={{
-            padding: '16px 32px',
-            fontSize: 20,
-            fontWeight: 'bold',
-            background: 'linear-gradient(180deg, #27ae60, #219a52)',
-            color: '#fff',
-            border: 'none',
-            borderRadius: 8,
-            cursor: 'pointer',
-            transition: 'filter 0.2s',
-            letterSpacing: 1,
-            boxShadow: '0 4px 15px rgba(39, 174, 96, 0.3)',
-          }}
+          style={primaryBtnStyle('#27ae60', '#219a52', 'rgba(39, 174, 96, 0.3)')}
         >
           Single Player
         </button>
@@ -51,23 +52,53 @@ export function MainMenu() {
         <button
           onClick={startMultiplayer}
           className="font-display"
-          style={{
-            padding: '16px 32px',
-            fontSize: 20,
-            fontWeight: 'bold',
-            background: 'linear-gradient(180deg, #3498db, #2980b9)',
-            color: '#fff',
-            border: 'none',
-            borderRadius: 8,
-            cursor: 'pointer',
-            transition: 'filter 0.2s',
-            letterSpacing: 1,
-            boxShadow: '0 4px 15px rgba(52, 152, 219, 0.3)',
-          }}
+          style={primaryBtnStyle('#3498db', '#2980b9', 'rgba(52, 152, 219, 0.3)')}
         >
           Multiplayer
         </button>
+
+        <button
+          onClick={() => setShowHowToPlay(true)}
+          className="font-display"
+          style={{
+            padding: '12px 32px',
+            fontSize: 16,
+            fontWeight: 'bold',
+            background: 'transparent',
+            color: '#aaa',
+            border: '2px solid #444',
+            borderRadius: 8,
+            cursor: 'pointer',
+            transition: 'border-color 0.2s, color 0.2s',
+            letterSpacing: 1,
+          }}
+        >
+          How to Play
+        </button>
       </div>
+
+      {showHowToPlay && (
+        <HowToPlay
+          onClose={() => setShowHowToPlay(false)}
+          onStartTutorial={handleStartWithTutorial}
+        />
+      )}
     </div>
   );
+}
+
+function primaryBtnStyle(from: string, to: string, shadow: string): React.CSSProperties {
+  return {
+    padding: '16px 32px',
+    fontSize: 20,
+    fontWeight: 'bold',
+    background: `linear-gradient(180deg, ${from}, ${to})`,
+    color: '#fff',
+    border: 'none',
+    borderRadius: 8,
+    cursor: 'pointer',
+    transition: 'filter 0.2s',
+    letterSpacing: 1,
+    boxShadow: `0 4px 15px ${shadow}`,
+  };
 }

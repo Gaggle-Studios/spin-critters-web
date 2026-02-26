@@ -26,6 +26,10 @@ interface GameStore {
   pendingEvents: BattleEvent[];
   isAnimating: boolean;
 
+  // Tutorial
+  tutorialEnabled: boolean;
+  setTutorialEnabled: (enabled: boolean) => void;
+
   // Multiplayer state (used when mode === 'multiplayer')
   connectionStatus: ConnectionStatus;
   playerId: string | null;
@@ -161,6 +165,7 @@ export const useGameStore = create<GameStore>((set, get) => {
     allCritters: getAllCritters(),
     pendingEvents: [],
     isAnimating: false,
+    tutorialEnabled: false,
     connectionStatus: 'disconnected',
     playerId: null,
     roomId: null,
@@ -168,6 +173,8 @@ export const useGameStore = create<GameStore>((set, get) => {
     multiplayerState: null,
     waitingFor: null,
     serverError: null,
+
+    setTutorialEnabled: (enabled: boolean) => set({ tutorialEnabled: enabled }),
 
     // Mode actions
     goToMenu: () => {

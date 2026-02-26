@@ -7,6 +7,7 @@ import { ShopView } from './ShopView.tsx';
 import { MainMenu } from './MainMenu.tsx';
 import { LobbyView } from './LobbyView.tsx';
 import { MultiplayerGameView } from './MultiplayerGameView.tsx';
+import { TutorialOverlay } from './TutorialOverlay.tsx';
 
 export function GameBoard() {
   const mode = useGameStore((s) => s.mode);
@@ -14,6 +15,8 @@ export function GameBoard() {
   const playAgain = useGameStore((s) => s.playAgain);
   const roomId = useGameStore((s) => s.roomId);
   const multiplayerState = useGameStore((s) => s.multiplayerState);
+  const tutorialEnabled = useGameStore((s) => s.tutorialEnabled);
+  const setTutorialEnabled = useGameStore((s) => s.setTutorialEnabled);
 
   // Main menu
   if (mode === 'menu') {
@@ -46,6 +49,13 @@ export function GameBoard() {
       {tournament.phase === 'shop' && <ShopView />}
       {tournament.phase === 'game-over' && (
         <GameOver tournament={tournament} onPlayAgain={playAgain} />
+      )}
+
+      {tutorialEnabled && (
+        <TutorialOverlay
+          phase={tournament.phase}
+          onDismiss={() => setTutorialEnabled(false)}
+        />
       )}
     </div>
   );

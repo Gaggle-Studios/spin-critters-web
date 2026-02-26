@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { PlayerState, TournamentState } from '../engine/types.ts';
 import { isMuted, setMuted } from '../audio/sfx.ts';
+import { APP_VERSION } from '../version.ts';
 
 interface StatusBarProps {
   tournament: TournamentState;
@@ -31,7 +32,8 @@ export function StatusBar({ tournament }: StatusBarProps) {
     }}>
       <div>
         <strong className="font-display" style={{ fontSize: 20, letterSpacing: 1 }}>SPIN CRITTERS</strong>
-        <span style={{ marginLeft: 24, color: '#aaa' }}>
+        <span style={{ marginLeft: 8, color: '#555', fontSize: 11 }}>{APP_VERSION}</span>
+        <span style={{ marginLeft: 16, color: '#aaa' }}>
           Round {tournament.round} | Battle {tournament.battleInRound + 1}
         </span>
       </div>
