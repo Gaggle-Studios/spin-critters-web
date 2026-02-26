@@ -43,7 +43,7 @@ interface GameStore {
   // Single-player actions
   initGame: () => void;
   selectCritters: (critterIds: string[], columns: number[]) => void;
-  draftPick: (cardIndex: number, column: number) => void;
+  draftPick: (cardIndex: number, column: number, row?: number) => void;
   spin: () => void;
   endBattle: () => void;
   buyCard: (cardIndex: number, column: number, row?: number) => void;
@@ -219,8 +219,8 @@ export const useGameStore = create<GameStore>((set, get) => {
       tournament: { ...humanSelectCritters(s.tournament, critterIds, columns) },
     })),
 
-    draftPick: (cardIndex, column) => set((s) => ({
-      tournament: { ...humanDraftPick(s.tournament, cardIndex, column) },
+    draftPick: (cardIndex, column, row) => set((s) => ({
+      tournament: { ...humanDraftPick(s.tournament, cardIndex, column, row) },
     })),
 
     spin: () => {

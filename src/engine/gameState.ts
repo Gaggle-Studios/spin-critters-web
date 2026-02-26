@@ -122,7 +122,8 @@ export function humanSelectCritters(
 export function humanDraftPick(
   state: TournamentState,
   cardIndex: number,
-  column: number
+  column: number,
+  row?: number
 ): TournamentState {
   const human = state.players.find((p) => p.id === state.humanPlayerId)!;
   const packs = state.draftPacks!;
@@ -131,11 +132,20 @@ export function humanDraftPick(
 
   // Place the card
   const instance = createCardInstance(pickedDef);
-  // Find first empty row in column
-  for (let row = 0; row < human.reelHeight; row++) {
-    if (!human.reels[row][column].card) {
-      human.reels[row][column].card = instance;
-      break;
+
+  let placed = false;
+  // If a specific row is provided, place there if empty
+  if (row !== undefined && !human.reels[row]?.[column]?.card) {
+    human.reels[row][column].card = instance;
+    placed = true;
+  }
+  // Fallback: find first empty row in column
+  if (!placed) {
+    for (let r = 0; r < human.reelHeight; r++) {
+      if (!human.reels[r][column].card) {
+        human.reels[r][column].card = instance;
+        break;
+      }
     }
   }
 
