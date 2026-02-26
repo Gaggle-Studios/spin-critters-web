@@ -27,11 +27,10 @@ export function StatusBar({ tournament }: StatusBarProps) {
       justifyContent: 'space-between',
       alignItems: 'center',
       borderBottom: '3px solid #333',
-      fontFamily: 'monospace',
       color: '#eee',
     }}>
       <div>
-        <strong>SPIN CRITTERS</strong>
+        <strong className="font-display" style={{ fontSize: 20, letterSpacing: 1 }}>SPIN CRITTERS</strong>
         <span style={{ marginLeft: 24, color: '#aaa' }}>
           Round {tournament.round} | Battle {tournament.battleInRound + 1}
         </span>
@@ -68,7 +67,7 @@ export function StatusBar({ tournament }: StatusBarProps) {
           onClick={toggleMute}
           style={{
             background: 'none', border: '2px solid #555', borderRadius: 6,
-            color: '#aaa', cursor: 'pointer', fontFamily: 'monospace',
+            color: '#aaa', cursor: 'pointer',
             fontSize: 21, padding: '3px 12px',
           }}
           title={muted ? 'Unmute' : 'Mute'}

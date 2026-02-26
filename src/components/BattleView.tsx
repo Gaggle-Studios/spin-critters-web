@@ -1,8 +1,8 @@
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 import { useGameStore } from '../store/gameStore.ts';
 import { ReelGrid } from './ReelGrid.tsx';
 import { BattleLog } from './BattleLog.tsx';
-import { REEL_WIDTH } from '../engine/constants.ts';
+import { REEL_WIDTH, BIOME_COLORS } from '../engine/constants.ts';
 import { CardSlot } from './CardSlot.tsx';
 import { ReelSpinner } from './ReelSpinner.tsx';
 import { BattleEventOverlay, getCardEffects } from './BattleEventOverlay.tsx';
@@ -10,6 +10,8 @@ import { useAnimationQueue } from './useAnimationQueue.ts';
 import { useProgressiveDisplay } from './useProgressiveDisplay.ts';
 import { useBattleSounds } from '../audio/useBattleSounds.ts';
 import { playSfx } from '../audio/sfx.ts';
+import { BattleIntro } from './BattleIntro.tsx';
+import type { Biome } from '../engine/types.ts';
 
 export function BattleView() {
   const tournament = useGameStore((s) => s.tournament);
@@ -27,6 +29,10 @@ export function BattleView() {
   // Play sounds for battle events
   useBattleSounds(currentEvent);
 
+  // Battle intro state
+  const [showIntro, setShowIntro] = useState(true);
+  const introOpponentRef = useRef<string | undefined>(undefined);
+
   // Auto-battle state — reset when a new battle starts
   const [autoPlaying, setAutoPlaying] = useState(false);
   const autoPlayingRef = useRef(false);
@@ -37,7 +43,36 @@ export function BattleView() {
       setAutoPlaying(false);
       autoPlayingRef.current = false;
     }
+    // Show intro for new opponent
+    if (tournament.currentBattle?.player2?.id !== introOpponentRef.current) {
+      introOpponentRef.current = tournament.currentBattle?.player2?.id;
+      setShowIntro(true);
+    }
   }
+
+  // Screen shake state
+  const [screenShake, setScreenShake] = useState(false);
+  // KO vignette state
+  const [showKOVignette, setShowKOVignette] = useState(false);
+
+  // Trigger screen shake on big hits or KOs
+  useEffect(() => {
+    if (!currentEvent) return;
+    if (currentEvent.type === 'attack') {
+      if (currentEvent.damage >= 15 || currentEvent.defenderIsKO) {
+        setScreenShake(true);
+        const timer = setTimeout(() => setScreenShake(false), 400);
+        return () => clearTimeout(timer);
+      }
+    }
+    if (currentEvent.type === 'ko') {
+      setShowKOVignette(true);
+      setScreenShake(true);
+      const timer1 = setTimeout(() => setScreenShake(false), 400);
+      const timer2 = setTimeout(() => setShowKOVignette(false), 500);
+      return () => { clearTimeout(timer1); clearTimeout(timer2); };
+    }
+  }, [currentEvent]);
 
   // Keep ref in sync
   useEffect(() => {
@@ -122,15 +157,55 @@ export function BattleView() {
     return list.includes(col);
   };
 
-  const spinDisabled = isAnimating || isStoreAnimating;
+  // Determine dominant biome from player's active cards for background
+  const dominantBiome = useMemo(() => {
+    const biomeCounts: Record<string, number> = {};
+    for (const card of battle.player1ActiveCards) {
+      if (card && !card.isKO) {
+        const b = card.biome;
+        biomeCounts[b] = (biomeCounts[b] || 0) + 1;
+      }
+    }
+    let best: Biome = 'Red';
+    let bestCount = 0;
+    for (const [biome, count] of Object.entries(biomeCounts)) {
+      if (count > bestCount) {
+        bestCount = count;
+        best = biome as Biome;
+      }
+    }
+    return best;
+  }, [battle.player1ActiveCards]);
+
+  // Show intro
+  if (showIntro) {
+    return (
+      <BattleIntro
+        playerName={human.name}
+        opponentName={opponent.name}
+        playerCritters={human.critters}
+        opponentCritters={opponent.critters}
+        onComplete={() => setShowIntro(false)}
+      />
+    );
+  }
 
   return (
-    <div style={{ padding: 24, fontFamily: 'monospace', color: '#eee', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+    <div style={{ padding: 24, color: '#eee', display: 'flex', flexDirection: 'column', alignItems: 'center', position: 'relative' }}>
+      {/* Background environment particles */}
+      <div className={`battle-bg battle-bg-${dominantBiome}`} />
+
+      {/* KO vignette flash */}
+      {showKOVignette && <div className="ko-vignette" />}
+
       {/* Wrapper for overlay positioning */}
-      <div style={{ position: 'relative' }}>
+      <div
+        className={screenShake ? 'screen-shake' : undefined}
+        style={{ position: 'relative', zIndex: 1 }}
+      >
         {/* Opponent active row */}
         <div style={{ marginBottom: 16 }}>
-          <div style={{ fontSize: 17, color: '#aaa', marginBottom: 8, fontWeight: 'bold', textAlign: 'center' }}>
+          <div className="font-display" style={{ fontSize: 17, color: '#aaa', marginBottom: 8, fontWeight: 'bold', textAlign: 'center' }}>
             {opponent.name} (Morale: {opponent.morale}) - Resources: {opponent.resources}
           </div>
           <div style={{ display: 'flex', gap: 5, justifyContent: 'center' }}>
@@ -159,7 +234,7 @@ export function BattleView() {
         </div>
 
         {/* Battle line */}
-        <div style={{
+        <div className="font-display" style={{
           textAlign: 'center',
           padding: '8px 0',
           color: '#f1c40f',
@@ -168,6 +243,7 @@ export function BattleView() {
           borderTop: '3px solid #f1c40f',
           borderBottom: '3px solid #f1c40f',
           margin: '12px 0',
+          letterSpacing: 1,
         }}>
           BATTLE LINE - Spin {battle.currentSpin}/{battle.maxSpins}
           {battle.currentSpin > 10 && ` (OVERTIME! +${battle.currentSpin - 10} dmg)`}
@@ -205,50 +281,56 @@ export function BattleView() {
       </div>
 
       {/* Player full reels */}
-      <ReelGrid
-        player={human}
-        activeCards={battle.player1ActiveCards}
-        label={`${human.name}'s Reels`}
-        compact
-      />
+      <div style={{ zIndex: 1 }}>
+        <ReelGrid
+          player={human}
+          activeCards={battle.player1ActiveCards}
+          label={`${human.name}'s Reels`}
+          compact
+        />
+      </div>
 
       {/* Controls */}
-      <div style={{ marginTop: 18, display: 'flex', gap: 12, alignItems: 'center', justifyContent: 'center' }}>
+      <div style={{ marginTop: 18, display: 'flex', gap: 12, alignItems: 'center', justifyContent: 'center', zIndex: 1 }}>
         {!battle.isComplete ? (
           !autoPlaying ? (
             <button
               onClick={handleGo}
+              className="font-display"
               style={{
                 padding: '15px 48px',
-                fontSize: 21,
+                fontSize: 24,
                 fontWeight: 'bold',
-                background: '#3498db',
+                background: 'linear-gradient(180deg, #3498db, #2980b9)',
                 color: '#fff',
                 border: 'none',
-                borderRadius: 6,
+                borderRadius: 8,
                 cursor: 'pointer',
-                fontFamily: 'monospace',
+                letterSpacing: 2,
+                textTransform: 'uppercase',
+                boxShadow: '0 4px 15px rgba(52, 152, 219, 0.4)',
               }}
             >
               GO!
             </button>
           ) : (
             <>
-              <div style={{ fontSize: 18, color: '#f1c40f', fontWeight: 'bold' }}>
+              <div className="font-display" style={{ fontSize: 18, color: '#f1c40f', fontWeight: 'bold' }}>
                 Auto-battling...
               </div>
               <button
                 onClick={handleSkipAll}
+                className="font-display"
                 style={{
                   padding: '12px 30px',
                   fontSize: 18,
                   fontWeight: 'bold',
-                  background: '#e67e22',
+                  background: 'linear-gradient(180deg, #e67e22, #d35400)',
                   color: '#fff',
                   border: 'none',
-                  borderRadius: 6,
+                  borderRadius: 8,
                   cursor: 'pointer',
-                  fontFamily: 'monospace',
+                  letterSpacing: 1,
                 }}
               >
                 SKIP TO END
@@ -258,16 +340,18 @@ export function BattleView() {
         ) : (
           <button
             onClick={endBattle}
+            className="font-display"
             style={{
               padding: '15px 48px',
-              fontSize: 21,
+              fontSize: 24,
               fontWeight: 'bold',
-              background: '#27ae60',
+              background: 'linear-gradient(180deg, #27ae60, #219a52)',
               color: '#fff',
               border: 'none',
-              borderRadius: 6,
+              borderRadius: 8,
               cursor: 'pointer',
-              fontFamily: 'monospace',
+              letterSpacing: 1,
+              boxShadow: '0 4px 15px rgba(39, 174, 96, 0.4)',
             }}
           >
             Continue to Shop
@@ -276,7 +360,7 @@ export function BattleView() {
       </div>
 
       {/* Battle log */}
-      <div style={{ marginTop: 18 }}>
+      <div style={{ marginTop: 18, zIndex: 1, width: '100%', maxWidth: 790 }}>
         <BattleLog log={battle.log} />
       </div>
     </div>

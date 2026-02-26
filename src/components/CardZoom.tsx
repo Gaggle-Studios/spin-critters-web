@@ -64,8 +64,7 @@ export function CardZoom({ card, definition, anchorRect }: CardZoomProps) {
         width: ZOOM_W,
         zIndex: 10000,
         pointerEvents: 'none',
-        fontFamily: 'monospace',
-      }}
+              }}
     >
       <div style={{
         background: '#111827',

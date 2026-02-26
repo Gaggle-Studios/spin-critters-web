@@ -23,8 +23,7 @@ export function BattleLog({ log }: BattleLogProps) {
       padding: 12,
       height: 270,
       overflowY: 'auto',
-      fontFamily: 'monospace',
-      fontSize: 15,
+            fontSize: 15,
       color: '#ccc',
     }}>
       <div style={{ fontWeight: 'bold', color: '#aaa', marginBottom: 4 }}>BATTLE LOG</div>

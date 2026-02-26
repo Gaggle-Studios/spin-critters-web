@@ -154,8 +154,7 @@ export function CritterSelect() {
             border: 'none',
             borderRadius: 7,
             cursor: 'pointer',
-            fontFamily: 'monospace',
-          }}
+                      }}
         >
           Place Critters in Columns
         </button>

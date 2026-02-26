@@ -62,8 +62,7 @@ function GameOver({ tournament, onPlayAgain }: {
   return (
     <div style={{
       padding: 60,
-      fontFamily: 'monospace',
-      color: '#eee',
+            color: '#eee',
       textAlign: 'center',
       maxWidth: 600,
       margin: '0 auto',
@@ -120,8 +119,7 @@ function GameOver({ tournament, onPlayAgain }: {
           border: 'none',
           borderRadius: 9,
           cursor: 'pointer',
-          fontFamily: 'monospace',
-        }}
+                  }}
       >
         Play Again
       </button>

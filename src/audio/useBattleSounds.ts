@@ -19,7 +19,7 @@ export function useBattleSounds(currentEvent: BattleEvent | null): void {
         break;
 
       case 'attack':
-        playSfx('attack');
+        playSfx(currentEvent.damage >= 15 ? 'bigHit' : 'attack');
         break;
 
       case 'ko':

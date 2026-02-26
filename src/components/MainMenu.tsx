@@ -12,58 +12,58 @@ export function MainMenu() {
       flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'center',
-      fontFamily: 'monospace',
-      color: '#eee',
+            color: '#eee',
     }}>
-      <h1 style={{
-        fontSize: 48,
+      <h1 className="font-display" style={{
+        fontSize: 56,
         color: '#f1c40f',
         marginBottom: 8,
-        textShadow: '0 0 20px rgba(241, 196, 15, 0.3)',
+        textShadow: '0 0 30px rgba(241, 196, 15, 0.4), 0 0 60px rgba(241, 196, 15, 0.15)',
+        letterSpacing: 3,
       }}>
         SPIN CRITTERS
       </h1>
-      <p style={{ color: '#888', fontSize: 14, marginBottom: 48 }}>
+      <p style={{ color: '#888', fontSize: 14, marginBottom: 48, letterSpacing: 2 }}>
         Slot Machine Card Battler
       </p>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: 16, minWidth: 280 }}>
         <button
           onClick={startSinglePlayer}
+          className="font-display"
           style={{
             padding: '16px 32px',
-            fontSize: 18,
+            fontSize: 20,
             fontWeight: 'bold',
-            background: '#27ae60',
+            background: 'linear-gradient(180deg, #27ae60, #219a52)',
             color: '#fff',
             border: 'none',
             borderRadius: 8,
             cursor: 'pointer',
-            fontFamily: 'monospace',
-            transition: 'background 0.2s',
+            transition: 'filter 0.2s',
+            letterSpacing: 1,
+            boxShadow: '0 4px 15px rgba(39, 174, 96, 0.3)',
           }}
-          onMouseOver={(e) => (e.currentTarget.style.background = '#2ecc71')}
-          onMouseOut={(e) => (e.currentTarget.style.background = '#27ae60')}
         >
           Single Player
         </button>
 
         <button
           onClick={startMultiplayer}
+          className="font-display"
           style={{
             padding: '16px 32px',
-            fontSize: 18,
+            fontSize: 20,
             fontWeight: 'bold',
-            background: '#3498db',
+            background: 'linear-gradient(180deg, #3498db, #2980b9)',
             color: '#fff',
             border: 'none',
             borderRadius: 8,
             cursor: 'pointer',
-            fontFamily: 'monospace',
-            transition: 'background 0.2s',
+            transition: 'filter 0.2s',
+            letterSpacing: 1,
+            boxShadow: '0 4px 15px rgba(52, 152, 219, 0.3)',
           }}
-          onMouseOver={(e) => (e.currentTarget.style.background = '#2980b9')}
-          onMouseOut={(e) => (e.currentTarget.style.background = '#3498db')}
         >
           Multiplayer
         </button>

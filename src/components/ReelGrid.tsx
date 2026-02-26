@@ -14,8 +14,7 @@ export function ReelGrid({ player, activeCards, compact, label }: ReelGridProps)
     <div>
       {label && (
         <div style={{
-          fontFamily: 'monospace',
-          fontSize: 12,
+                    fontSize: 12,
           color: '#aaa',
           marginBottom: 4,
           fontWeight: 'bold',

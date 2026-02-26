@@ -284,6 +284,7 @@ export function createCardInstance(def: CardDefinition): CardInstance {
     definitionId: def.cardId,
     name: def.name,
     category: def.category,
+    rarity: def.rarity,
     biome: def.biome,
     archetype: def.archetype,
     currentHealth: def.health,

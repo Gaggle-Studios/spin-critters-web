@@ -12,6 +12,7 @@ interface CardSlotProps {
   selected?: boolean;
   highlight?: string;
   shake?: boolean;
+  koFlash?: boolean;
 }
 
 function getCardImageUrl(cardId: string, category: string): string | null {
@@ -24,7 +25,7 @@ const FULL_H = 225;
 const COMPACT_W = 114;
 const COMPACT_H = 165;
 
-export function CardSlot({ card, definition, isActive, onClick, compact, selected, highlight, shake }: CardSlotProps) {
+export function CardSlot({ card, definition, isActive, onClick, compact, selected, highlight, shake, koFlash }: CardSlotProps) {
   const source = card ?? null;
   const def = definition ?? null;
 
@@ -32,6 +33,7 @@ export function CardSlot({ card, definition, isActive, onClick, compact, selecte
   const name = source?.name ?? def?.name ?? '';
   const category = source?.category ?? def?.category ?? 'Junk';
   const biome = source?.biome ?? def?.biome ?? 'Red';
+  const rarity = source?.rarity ?? def?.rarity ?? 'Common';
   const attack = source?.currentAttack ?? def?.attack ?? 0;
   const health = source?.currentHealth ?? def?.health ?? 0;
   const maxHealth = source?.maxHealth ?? def?.health ?? 0;
@@ -99,8 +101,25 @@ export function CardSlot({ card, definition, isActive, onClick, compact, selecte
   const bgColor = category === 'Junk' ? '#333' : BIOME_COLORS[biome] || '#444';
   const imageUrl = cardId ? getCardImageUrl(cardId, category) : null;
   const hasImage = imageUrl && !imgError;
-  const borderColor = highlight || (selected ? '#FFD700' : isActive ? '#FFD700' : isKO ? '#555' : '#888');
-  const glowColor = highlight || ((isActive || selected) ? '#FFD700' : undefined);
+
+  // Build CSS class names for rarity, biome glow, shake, and KO flash
+  const classNames: string[] = [];
+  if (shake) classNames.push('battle-shake');
+  if (koFlash) classNames.push('card-ko-flash');
+
+  // Rarity effects (only for non-junk, non-KO cards)
+  if (!isKO && category !== 'Junk') {
+    if (rarity === 'Uncommon') classNames.push('card-rarity-uncommon');
+    if (rarity === 'Rare') classNames.push('card-rarity-rare');
+  }
+
+  // Biome glow for active battle cards (not KO'd)
+  const useBiomeGlow = isActive && !isKO && !highlight && !selected;
+  if (useBiomeGlow) classNames.push('card-battle-active');
+
+  // Determine border and glow colors
+  const borderColor = highlight || (selected ? '#FFD700' : isKO ? '#555' : useBiomeGlow ? bgColor : '#888');
+  const glowColor = highlight || (selected ? '#FFD700' : undefined);
 
   const hasKeywords = keywords.length > 0;
 
@@ -111,14 +130,13 @@ export function CardSlot({ card, definition, isActive, onClick, compact, selecte
         onClick={onClick}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
-        className={shake ? 'battle-shake' : undefined}
+        className={classNames.length > 0 ? classNames.join(' ') : undefined}
         style={{
           width: w,
           height: h,
           background: isKO ? '#2a2a2a' : bgColor,
           border: `2px solid ${borderColor}`,
           borderRadius: 6,
-          fontFamily: 'monospace',
           cursor: onClick ? 'pointer' : 'default',
           opacity: isKO ? 0.5 : 1,
           display: 'flex',
@@ -129,7 +147,9 @@ export function CardSlot({ card, definition, isActive, onClick, compact, selecte
           transition: 'border-color 0.15s, box-shadow 0.15s, transform 0.1s',
           transform: hovered ? 'scale(1.05)' : 'scale(1)',
           zIndex: hovered ? 10 : 1,
-        }}
+          // CSS variable for biome glow animation
+          '--biome-color': bgColor,
+        } as React.CSSProperties}
       >
         {/* KO overlay */}
         {isKO && (
@@ -155,7 +175,7 @@ export function CardSlot({ card, definition, isActive, onClick, compact, selecte
           flexShrink: 0,
           zIndex: 1,
         }}>
-          <div style={{
+          <div className="font-display" style={{
             fontWeight: 'bold',
             fontSize: compact ? 13 : 15,
             whiteSpace: 'nowrap',
@@ -238,7 +258,7 @@ export function CardSlot({ card, definition, isActive, onClick, compact, selecte
         )}
 
         {/* Bottom: Attack / Health */}
-        <div style={{
+        <div className="font-stats" style={{
           padding: '5px 6px',
           background: 'rgba(0,0,0,0.5)',
           display: 'flex',

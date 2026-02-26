@@ -86,8 +86,7 @@ export function ShopView() {
             border: 'none',
             borderRadius: 7,
             cursor: human.resources >= 2 ? 'pointer' : 'not-allowed',
-            fontFamily: 'monospace',
-            fontWeight: 'bold',
+                        fontWeight: 'bold',
           }}
         >
           Reroll (2 res)
@@ -101,8 +100,7 @@ export function ShopView() {
             border: 'none',
             borderRadius: 7,
             cursor: 'pointer',
-            fontFamily: 'monospace',
-            fontWeight: 'bold',
+                        fontWeight: 'bold',
           }}
         >
           Skip
@@ -112,8 +110,7 @@ export function ShopView() {
       {/* Reel grid with clickable placement slots */}
       <div style={{ marginTop: 30 }}>
         <div style={{
-          fontFamily: 'monospace',
-          fontSize: 12,
+                    fontSize: 12,
           color: '#aaa',
           marginBottom: 4,
           fontWeight: 'bold',

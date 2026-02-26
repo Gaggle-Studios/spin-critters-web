@@ -38,6 +38,7 @@ export interface CardInstance {
   definitionId: string;
   name: string;
   category: CardCategory;
+  rarity: Rarity;
   biome: Biome;
   archetype: Archetype;
   currentHealth: number;

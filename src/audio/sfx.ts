@@ -44,16 +44,19 @@ const SOUNDS = {
   spin: [.4, .05, 200, , .04, .07, , 1.5, -30, , , , , 1, , , , , .02],
 
   // Card attacks opponent — punchy hit
-  attack: [.5, .05, 400, , .02, .08, 4, 1.5, , , , , , 1.5, , , , .8],
+  attack: [.6, .05, 450, , .02, .06, 4, 1.8, , , , , , 2, , , , .85],
 
-  // Card is KO'd — low thud
-  ko: [.6, .05, 80, , .08, .3, 4, 2, , , , , , 2, , .2, , .5],
+  // Big hit (15+ damage) — heavy impact with rumble
+  bigHit: [.8, .05, 200, , .04, .2, 4, 2.5, -20, , , , , 3, , .15, , .7, .03],
+
+  // Card is KO'd — deep crash with reverb
+  ko: [.8, .05, 60, , .1, .4, 4, 2.5, -10, , , , , 3, , .3, .02, .4],
 
   // Biome CRIT — sparkly power-up
-  critBiome: [.5, 0, 600, .02, .12, .2, 0, 1, 20, , 200, .06, , , , , , .8, .02],
+  critBiome: [.6, 0, 600, .02, .15, .25, 0, 1, 20, , 200, .06, , , , , , .85, .02],
 
   // Archetype CRIT — ascending chime
-  critArchetype: [.4, 0, 500, .02, .1, .15, 0, 1, 15, , 150, .08, , , , , , .8],
+  critArchetype: [.5, 0, 500, .02, .12, .18, 0, 1, 15, , 150, .08, , , , , , .85],
 
   // Heal / Regenerate — gentle ascending tone
   heal: [.3, 0, 600, .05, .12, .15, 0, .5, 10, , 100, .05],
@@ -62,13 +65,13 @@ const SOUNDS = {
   poison: [.3, .1, 150, , .04, .1, 3, 1.5, -5, , , , .05, .5],
 
   // Thorns reflect — metallic ping
-  thorns: [.3, 0, 900, , .02, .1, 2, 1.5, , , 50, .05, , , , , , .6],
+  thorns: [.35, 0, 900, , .02, .12, 2, 1.5, , , 50, .05, , , , , , .65],
 
   // Resource gained — coin bling
-  resource: [.3, 0, 1200, , .03, .08, 0, 1, , , 300, .03],
+  resource: [.35, 0, 1200, , .03, .08, 0, 1, , , 300, .03],
 
   // Shop purchase — register cha-ching
-  purchase: [.4, 0, 800, , .05, .15, 0, 1, , , 400, .04, .08],
+  purchase: [.45, 0, 800, , .05, .18, 0, 1, , , 400, .04, .08],
 
   // Card selected — satisfying pop
   click: [.5, 0, 700, , .04, .06, 0, 1.2, 15, , 80, .02, , , , , , .7],
@@ -76,26 +79,26 @@ const SOUNDS = {
   // Card deselected — softer reverse pop
   deselect: [.3, 0, 500, , .03, .04, 0, 1, -10, , , , , , , , , .5],
 
-  // Battle starts — ascending fanfare
-  battleStart: [.4, 0, 300, .05, .15, .3, 0, 1, 10, , 100, .1, .1, , , , .05, .7],
+  // Battle starts — louder ascending fanfare with echo
+  battleStart: [.7, 0, 250, .03, .2, .4, 0, 1.2, 12, , 150, .08, .12, , , , .04, .8],
 
   // Victory — happy ascending notes
-  victory: [.5, 0, 500, .02, .2, .4, 0, 1, 15, , 200, .08, .1, , , , .03, .8],
+  victory: [.6, 0, 500, .02, .2, .4, 0, 1, 15, , 200, .08, .1, , , , .03, .8],
 
   // Defeat — descending sad tone
   defeat: [.4, 0, 400, .05, .15, .4, 0, 1, -15, , -100, .08, , , , , .05, .5],
 
   // Overtime warning — alarm beep
-  overtime: [.3, 0, 700, , .05, .05, 2, 1, , , , , .1],
+  overtime: [.35, 0, 700, , .05, .05, 2, 1, , , , , .1],
 
-  // Card placed in reel — solid thump
-  place: [.5, .05, 250, , .05, .1, 4, 2, -15, , , , , .3, , , , .7],
+  // Card placed in reel — deeper satisfying thump
+  place: [.65, .05, 180, , .06, .15, 4, 2.5, -20, , , , , .5, , , , .75],
 
   // Reroll — shuffling whoosh
-  reroll: [.3, .1, 300, , .06, .1, , 1, -20, , , , , .5],
+  reroll: [.35, .1, 300, , .06, .1, , 1, -20, , , , , .5],
 
   // Bolster buff — power surge
-  bolster: [.3, 0, 400, .02, .08, .1, 0, 1, 15, , 80, .04],
+  bolster: [.35, 0, 400, .02, .08, .12, 0, 1, 15, , 80, .04],
 } as const;
 
 export type SfxName = keyof typeof SOUNDS;

@@ -10,15 +10,19 @@ interface BattleEventOverlayProps {
 // floating numbers relative to the card grid containers.
 const COL_WIDTH = 155;
 
-function FloatingNumber({ col, text, color, isOpponent }: {
+function FloatingNumber({ col, text, color, isOpponent, damageSize }: {
   col: number;
   text: string;
   color: string;
   isOpponent: boolean;
+  damageSize?: 'normal' | 'big' | 'crit';
 }) {
+  const sizeClass = damageSize === 'crit' ? 'damage-crit' : damageSize === 'big' ? 'damage-big' : '';
+  const classes = ['battle-float-up', 'font-stats', sizeClass].filter(Boolean).join(' ');
+
   return (
     <div
-      className="battle-float-up"
+      className={classes}
       style={{
         position: 'absolute',
         left: col * COL_WIDTH + COL_WIDTH / 2,
@@ -30,7 +34,6 @@ function FloatingNumber({ col, text, color, isOpponent }: {
         textShadow: `0 0 12px ${color}, 0 4px 8px rgba(0,0,0,0.8)`,
         pointerEvents: 'none',
         zIndex: 20,
-        fontFamily: 'monospace',
       }}
     >
       {text}
@@ -89,7 +92,7 @@ function AttackBanner({ attackerName, defenderName, damage, isKO }: {
 }) {
   return (
     <div
-      className="battle-crit-flash"
+      className="battle-crit-flash font-display"
       style={{
         position: 'absolute',
         top: '50%',
@@ -105,8 +108,7 @@ function AttackBanner({ attackerName, defenderName, damage, isKO }: {
         pointerEvents: 'none',
         zIndex: 22,
         whiteSpace: 'nowrap',
-        fontFamily: 'monospace',
-      }}
+              }}
     >
       <span style={{ color: '#ffd700' }}>{attackerName}</span>
       <span style={{ color: '#888', margin: '0 8px' }}>{'\u2192'}</span>
@@ -120,7 +122,7 @@ function AttackBanner({ attackerName, defenderName, damage, isKO }: {
 function CritBanner({ text, color }: { text: string; color: string }) {
   return (
     <div
-      className="battle-crit-flash"
+      className="battle-crit-flash font-display"
       style={{
         position: 'absolute',
         top: '50%',
@@ -133,8 +135,7 @@ function CritBanner({ text, color }: { text: string; color: string }) {
         pointerEvents: 'none',
         zIndex: 25,
         whiteSpace: 'nowrap',
-        fontFamily: 'monospace',
-        letterSpacing: 3,
+                letterSpacing: 3,
       }}
     >
       {text}
@@ -145,7 +146,7 @@ function CritBanner({ text, color }: { text: string; color: string }) {
 function PhaseLabel({ label }: { label: string }) {
   return (
     <div
-      className="battle-float-up"
+      className="battle-float-up font-display"
       style={{
         position: 'absolute',
         top: 8,
@@ -158,8 +159,7 @@ function PhaseLabel({ label }: { label: string }) {
         pointerEvents: 'none',
         zIndex: 20,
         whiteSpace: 'nowrap',
-        fontFamily: 'monospace',
-        textTransform: 'uppercase',
+                textTransform: 'uppercase',
         letterSpacing: 2,
       }}
     >
@@ -171,7 +171,7 @@ function PhaseLabel({ label }: { label: string }) {
 function BattleEndBanner({ winnerName }: { winnerName: string }) {
   return (
     <div
-      className="battle-crit-flash"
+      className="battle-crit-flash font-display"
       style={{
         position: 'absolute',
         top: '50%',
@@ -184,8 +184,7 @@ function BattleEndBanner({ winnerName }: { winnerName: string }) {
         pointerEvents: 'none',
         zIndex: 30,
         whiteSpace: 'nowrap',
-        fontFamily: 'monospace',
-      }}
+              }}
     >
       {winnerName} WINS!
     </div>
@@ -201,6 +200,8 @@ export function BattleEventOverlay({ currentEvent, humanPlayerId }: BattleEventO
     case 'attack': {
       const defOnOpp = isOpponentSide(currentEvent.defenderPlayerId);
       const atkOnOpp = isOpponentSide(currentEvent.attackerPlayerId);
+      const dmg = currentEvent.damage;
+      const damageSize: 'normal' | 'big' | 'crit' = dmg >= 15 ? 'crit' : dmg >= 8 ? 'big' : 'normal';
       return (
         <>
           {/* Arrow from attacker to defender */}
@@ -215,6 +216,7 @@ export function BattleEventOverlay({ currentEvent, humanPlayerId }: BattleEventO
             text={`-${currentEvent.damage}`}
             color="#ff4444"
             isOpponent={defOnOpp}
+            damageSize={damageSize}
           />
           {/* Banner on battle line: "Fiammor → Marisect  -4" */}
           <AttackBanner

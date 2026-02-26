@@ -70,8 +70,7 @@ function MPStatusBar({ state, playerId }: { state: SanitizedGameState; playerId:
       padding: '8px 16px',
       background: '#1a1a2e',
       borderBottom: '1px solid #333',
-      fontFamily: 'monospace',
-      color: '#eee',
+            color: '#eee',
       display: 'flex',
       justifyContent: 'space-between',
       fontSize: 13,
@@ -208,8 +207,7 @@ function MPCritterSelect({ state, playerId, allCritters }: {
           style={{
             marginTop: 16, padding: '10px 24px', fontSize: 14, fontWeight: 'bold',
             background: '#27ae60', color: '#fff', border: 'none', borderRadius: 6,
-            cursor: 'pointer', fontFamily: 'monospace',
-          }}
+            cursor: 'pointer',           }}
         >
           Place Critters in Columns
         </button>
@@ -472,8 +470,7 @@ function MPBattleView({ state, playerId, pendingEvents, isStoreAnimating, finish
                 background: (!isWaitingForMe || isAnimating || isStoreAnimating) ? '#555' : '#3498db',
                 color: '#fff', border: 'none', borderRadius: 6,
                 cursor: (!isWaitingForMe || isAnimating || isStoreAnimating) ? 'not-allowed' : 'pointer',
-                fontFamily: 'monospace',
-              }}
+                              }}
             >
               GO!
             </button>
@@ -486,8 +483,7 @@ function MPBattleView({ state, playerId, pendingEvents, isStoreAnimating, finish
                 <button onClick={skipAnimation} style={{
                   padding: '8px 16px', fontSize: 12, fontWeight: 'bold',
                   background: '#7f8c8d', color: '#fff', border: 'none', borderRadius: 6,
-                  cursor: 'pointer', fontFamily: 'monospace',
-                }}>
+                  cursor: 'pointer',                 }}>
                   SKIP ANIM
                 </button>
               )}
@@ -675,8 +671,7 @@ function MPGameOver({ state, playerId, onBack }: {
       <button onClick={onBack} style={{
         marginTop: 32, padding: '12px 32px', fontSize: 16, fontWeight: 'bold',
         background: '#27ae60', color: '#fff', border: 'none', borderRadius: 8,
-        cursor: 'pointer', fontFamily: 'monospace',
-      }}>
+        cursor: 'pointer',       }}>
         Back to Menu
       </button>
     </div>

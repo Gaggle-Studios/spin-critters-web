@@ -60,8 +60,7 @@ export function DraftView() {
       {/* Reel grid with clickable placement slots */}
       <div style={{ marginTop: 30 }}>
         <div style={{
-          fontFamily: 'monospace',
-          fontSize: 12,
+                    fontSize: 12,
           color: '#aaa',
           marginBottom: 4,
           fontWeight: 'bold',

@@ -30,8 +30,7 @@ function PhantomCard({ biome, attack, health }: PhantomData) {
       justifyContent: 'space-between',
       padding: '12px 8px',
       boxSizing: 'border-box',
-      fontFamily: 'monospace',
-      flexShrink: 0,
+            flexShrink: 0,
     }}>
       <div style={{
         background: 'rgba(0,0,0,0.5)',

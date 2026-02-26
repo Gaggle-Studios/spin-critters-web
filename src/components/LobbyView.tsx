@@ -259,8 +259,7 @@ const containerStyle: React.CSSProperties = {
   flexDirection: 'column',
   alignItems: 'center',
   justifyContent: 'center',
-  fontFamily: 'monospace',
-  color: '#eee',
+    color: '#eee',
   padding: 20,
 };
 
@@ -273,8 +272,7 @@ const primaryBtnStyle: React.CSSProperties = {
   border: 'none',
   borderRadius: 8,
   cursor: 'pointer',
-  fontFamily: 'monospace',
-};
+  };
 
 const secondaryBtnStyle: React.CSSProperties = {
   padding: '12px 24px',
@@ -284,8 +282,7 @@ const secondaryBtnStyle: React.CSSProperties = {
   border: '1px solid #444',
   borderRadius: 8,
   cursor: 'pointer',
-  fontFamily: 'monospace',
-};
+  };
 
 const inputStyle: React.CSSProperties = {
   padding: '10px 14px',
@@ -294,7 +291,6 @@ const inputStyle: React.CSSProperties = {
   color: '#eee',
   border: '1px solid #444',
   borderRadius: 6,
-  fontFamily: 'monospace',
-  width: '100%',
+    width: '100%',
   boxSizing: 'border-box',
 };
