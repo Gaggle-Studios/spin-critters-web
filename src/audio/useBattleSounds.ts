@@ -1,13 +1,15 @@
 import { useEffect, useRef } from 'react';
-import type { BattleEvent } from '../engine/types.ts';
+import type { BattleEvent, BattlePhase } from '../engine/types.ts';
 import { playSfx } from './sfx.ts';
 
 /**
  * Plays sound effects in response to battle animation events.
- * Call this hook in any battle view component.
+ * Tracks the current attack phase so fast/regular/slow attacks
+ * each have distinct audio cues.
  */
 export function useBattleSounds(currentEvent: BattleEvent | null): void {
   const prevEventRef = useRef<BattleEvent | null>(null);
+  const currentPhaseRef = useRef<BattlePhase>('regular-attack');
 
   useEffect(() => {
     if (!currentEvent || currentEvent === prevEventRef.current) return;
@@ -18,9 +20,29 @@ export function useBattleSounds(currentEvent: BattleEvent | null): void {
         playSfx('spin');
         break;
 
-      case 'attack':
-        playSfx(currentEvent.damage >= 15 ? 'bigHit' : 'attack');
+      case 'phase-marker':
+        // Track the current attack phase for routing attack sounds
+        if (
+          currentEvent.phase === 'fast-attack' ||
+          currentEvent.phase === 'regular-attack' ||
+          currentEvent.phase === 'slow-attack'
+        ) {
+          currentPhaseRef.current = currentEvent.phase;
+        }
         break;
+
+      case 'attack': {
+        const big = currentEvent.damage >= 15;
+        const phase = currentPhaseRef.current;
+        if (phase === 'fast-attack') {
+          playSfx(big ? 'bigHitFast' : 'attackFast');
+        } else if (phase === 'slow-attack') {
+          playSfx(big ? 'bigHitSlow' : 'attackSlow');
+        } else {
+          playSfx(big ? 'bigHit' : 'attack');
+        }
+        break;
+      }
 
       case 'ko':
         playSfx('ko');

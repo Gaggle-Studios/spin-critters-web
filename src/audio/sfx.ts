@@ -43,11 +43,23 @@ const SOUNDS = {
   // Slot reel spinning — short whoosh
   spin: [.4, .05, 200, , .04, .07, , 1.5, -30, , , , , 1, , , , , .02],
 
-  // Card attacks opponent — punchy hit
+  // Card attacks opponent — punchy hit (regular phase)
   attack: [.6, .05, 450, , .02, .06, 4, 1.8, , , , , , 2, , , , .85],
 
-  // Big hit (15+ damage) — heavy impact with rumble
+  // Fast-phase attack — higher pitch, quick/sharp
+  attackFast: [.55, .05, 700, , .015, .04, 4, 1.5, 15, , , , , 1.5, , , , .9],
+
+  // Slow-phase attack — lower pitch, heavy/weighty
+  attackSlow: [.7, .05, 250, , .04, .12, 4, 2.2, -10, , , , , 2.5, , .1, , .75],
+
+  // Big hit (15+ damage) — heavy impact with rumble (regular phase)
   bigHit: [.8, .05, 200, , .04, .2, 4, 2.5, -20, , , , , 3, , .15, , .7, .03],
+
+  // Big hit fast phase — sharp crack
+  bigHitFast: [.75, .05, 500, , .03, .15, 4, 2, 20, , , , , 2.5, , .1, , .75, .02],
+
+  // Big hit slow phase — deep thunderous boom
+  bigHitSlow: [.9, .05, 120, , .06, .3, 4, 3, -25, , , , , 3.5, , .2, , .6, .04],
 
   // Card is KO'd — deep crash with reverb
   ko: [.8, .05, 60, , .1, .4, 4, 2.5, -10, , , , , 3, , .3, .02, .4],
