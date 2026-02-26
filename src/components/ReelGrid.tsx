@@ -19,11 +19,12 @@ export function ReelGrid({ player, activeCards, compact, label }: ReelGridProps)
           color: '#aaa',
           marginBottom: 4,
           fontWeight: 'bold',
+          textAlign: 'center',
         }}>
           {label} (Morale: {player.morale})
         </div>
       )}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 2, alignItems: 'center' }}>
         {Array.from({ length: player.reelHeight }, (_, row) => (
           <div key={row} style={{ display: 'flex', gap: 3 }}>
             {Array.from({ length: REEL_WIDTH }, (_, col) => {

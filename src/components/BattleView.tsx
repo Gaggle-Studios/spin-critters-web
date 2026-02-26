@@ -125,15 +125,15 @@ export function BattleView() {
   const spinDisabled = isAnimating || isStoreAnimating;
 
   return (
-    <div style={{ padding: 24, fontFamily: 'monospace', color: '#eee' }}>
+    <div style={{ padding: 24, fontFamily: 'monospace', color: '#eee', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
       {/* Wrapper for overlay positioning */}
       <div style={{ position: 'relative' }}>
         {/* Opponent active row */}
         <div style={{ marginBottom: 16 }}>
-          <div style={{ fontSize: 17, color: '#aaa', marginBottom: 8, fontWeight: 'bold' }}>
+          <div style={{ fontSize: 17, color: '#aaa', marginBottom: 8, fontWeight: 'bold', textAlign: 'center' }}>
             {opponent.name} (Morale: {opponent.morale}) - Resources: {opponent.resources}
           </div>
-          <div style={{ display: 'flex', gap: 5 }}>
+          <div style={{ display: 'flex', gap: 5, justifyContent: 'center' }}>
             {Array.from({ length: REEL_WIDTH }, (_, col) => {
               const card = getDisplayCard(opponent.id, col, battle.player2ActiveCards[col]);
               if (isSpinning) {
@@ -175,7 +175,7 @@ export function BattleView() {
 
         {/* Player active row */}
         <div style={{ marginBottom: 16 }}>
-          <div style={{ display: 'flex', gap: 5 }}>
+          <div style={{ display: 'flex', gap: 5, justifyContent: 'center' }}>
             {Array.from({ length: REEL_WIDTH }, (_, col) => {
               const card = getDisplayCard(human.id, col, battle.player1ActiveCards[col]);
               if (isSpinning) {
@@ -213,7 +213,7 @@ export function BattleView() {
       />
 
       {/* Controls */}
-      <div style={{ marginTop: 18, display: 'flex', gap: 12, alignItems: 'center' }}>
+      <div style={{ marginTop: 18, display: 'flex', gap: 12, alignItems: 'center', justifyContent: 'center' }}>
         {!battle.isComplete ? (
           !autoPlaying ? (
             <button

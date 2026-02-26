@@ -57,14 +57,14 @@ export function CritterSelect() {
     const currentCritter = currentIdx < 3 ? allCritters.find((c) => c.cardId === selected[currentIdx]) : null;
 
     return (
-      <div style={{ padding: 30, fontFamily: 'monospace', color: '#eee', maxWidth: 525, margin: '0 auto' }}>
+      <div style={{ padding: 30, fontFamily: 'monospace', color: '#eee', margin: '0 auto', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         <h2>Place Your Critters</h2>
         {currentCritter && (
           <p>
             Place <strong style={{ color: BIOME_COLORS[currentCritter.biome] }}>{currentCritter.name}</strong> in a column:
           </p>
         )}
-        <div style={{ display: 'flex', gap: 12, marginTop: 24 }}>
+        <div style={{ display: 'flex', gap: 6, marginTop: 24 }}>
           {Array.from({ length: REEL_WIDTH }, (_, col) => {
             const placedIdx = placements.indexOf(col);
             const placedCritter = placedIdx >= 0 ? allCritters.find((c) => c.cardId === selected[placedIdx]) : null;
@@ -72,7 +72,8 @@ export function CritterSelect() {
               return (
                 <CardSlot
                   key={col}
-                  definition={placedCritter }
+                  definition={placedCritter}
+                  compact
                 />
               );
             }
@@ -81,8 +82,8 @@ export function CritterSelect() {
                 key={col}
                 onClick={() => placeInColumn(col)}
                 style={{
-                  width: 150,
-                  height: 225,
+                  width: 114,
+                  height: 165,
                   border: '3px dashed #555',
                   borderRadius: 9,
                   display: 'flex',
@@ -105,7 +106,7 @@ export function CritterSelect() {
   }
 
   return (
-    <div style={{ padding: 30, fontFamily: 'monospace', color: '#eee', maxWidth: 600, margin: '0 auto' }}>
+    <div style={{ padding: 30, fontFamily: 'monospace', color: '#eee', margin: '0 auto', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
       <h2>Select 3 Critters</h2>
       <p style={{ color: '#aaa', fontSize: 18 }}>
         Max {MAX_SAME_BIOME_CRITTERS} from the same biome. Selected: {selected.length}/3
@@ -114,9 +115,9 @@ export function CritterSelect() {
       {BIOMES.map((biome) => {
         const critters = allCritters.filter((c) => c.biome === biome);
         return (
-          <div key={biome} style={{ marginBottom: 24 }}>
-            <h3 style={{ color: BIOME_COLORS[biome], margin: '16px 0 8px' }}>{biome} Biome</h3>
-            <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+          <div key={biome} style={{ marginBottom: 16 }}>
+            <h3 style={{ color: BIOME_COLORS[biome], margin: '12px 0 6px' }}>{biome} Biome</h3>
+            <div style={{ display: 'flex', gap: 6 }}>
               {critters.map((critter) => {
                 const isSelected = selected.includes(critter.cardId);
                 const biomeCount = biomeCounts[critter.biome] || 0;
@@ -128,8 +129,9 @@ export function CritterSelect() {
                     onClick={() => !disabled && toggleCritter(critter.cardId)}
                   >
                     <CardSlot
-                      definition={critter }
+                      definition={critter}
                       selected={isSelected}
+                      compact
                     />
                   </div>
                 );
