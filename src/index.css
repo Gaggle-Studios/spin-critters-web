@@ -197,10 +197,10 @@ button:hover:not(:disabled) {
 
 @keyframes biomeGlow {
   0%, 100% {
-    box-shadow: 0 0 8px var(--biome-color), 0 0 16px color-mix(in srgb, var(--biome-color) 40%, transparent);
+    box-shadow: 0 0 4px var(--biome-color), 0 0 8px color-mix(in srgb, var(--biome-color) 20%, transparent);
   }
   50% {
-    box-shadow: 0 0 16px var(--biome-color), 0 0 32px color-mix(in srgb, var(--biome-color) 50%, transparent), 0 0 48px color-mix(in srgb, var(--biome-color) 20%, transparent);
+    box-shadow: 0 0 8px var(--biome-color), 0 0 16px color-mix(in srgb, var(--biome-color) 25%, transparent), 0 0 24px color-mix(in srgb, var(--biome-color) 10%, transparent);
   }
 }
 
