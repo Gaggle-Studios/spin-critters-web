@@ -27,7 +27,7 @@ export function DraftView() {
   }
 
   return (
-    <div style={{ padding: 30, fontFamily: 'monospace', color: '#eee', maxWidth: 525, margin: '0 auto' }}>
+    <div style={{ padding: 30, fontFamily: 'monospace', color: '#eee', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
       <h2>Initial Draft</h2>
       <p style={{ color: '#aaa', fontSize: 18 }}>
         Pack {currentPackIdx + 1} of {packs.length} ({isCommonPack ? 'Common' : 'Uncommon'})

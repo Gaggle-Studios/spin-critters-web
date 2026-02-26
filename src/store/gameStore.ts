@@ -46,7 +46,7 @@ interface GameStore {
   draftPick: (cardIndex: number, column: number) => void;
   spin: () => void;
   endBattle: () => void;
-  buyCard: (cardIndex: number, column: number) => void;
+  buyCard: (cardIndex: number, column: number, row?: number) => void;
   rerollShop: () => void;
   skipShop: () => void;
   playAgain: () => void;
@@ -240,8 +240,8 @@ export const useGameStore = create<GameStore>((set, get) => {
       isAnimating: false,
     })),
 
-    buyCard: (cardIndex, column) => set((s) => ({
-      tournament: { ...shopBuy(s.tournament, cardIndex, column) },
+    buyCard: (cardIndex, column, row) => set((s) => ({
+      tournament: { ...shopBuy(s.tournament, cardIndex, column, row) },
     })),
 
     rerollShop: () => set((s) => ({

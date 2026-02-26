@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useGameStore } from '../store/gameStore.ts';
 import { SHOP_COST, REEL_WIDTH } from '../engine/constants.ts';
-import { ReelGrid } from './ReelGrid.tsx';
 import { CardSlot } from './CardSlot.tsx';
 import { playSfx } from '../audio/sfx.ts';
 
@@ -16,10 +15,10 @@ export function ShopView() {
   const pack = tournament.shopPack;
   if (!pack) return null;
 
-  function handleColumnClick(col: number) {
+  function handleSlotClick(row: number, col: number) {
     if (selectedCard === null) return;
     playSfx('purchase');
-    buyCard(selectedCard, col);
+    buyCard(selectedCard, col, row);
     setSelectedCard(null);
   }
 
@@ -28,8 +27,21 @@ export function ShopView() {
     rerollShop();
   }
 
+  // Build a set of placeable slots: empty or junk
+  const placeableSlots = new Set<string>();
+  if (selectedCard !== null) {
+    for (let row = 0; row < human.reelHeight; row++) {
+      for (let col = 0; col < REEL_WIDTH; col++) {
+        const card = human.reels[row]?.[col]?.card;
+        if (!card || card.category === 'Junk') {
+          placeableSlots.add(`${row},${col}`);
+        }
+      }
+    }
+  }
+
   return (
-    <div style={{ padding: 30, fontFamily: 'monospace', color: '#eee', maxWidth: 600, margin: '0 auto' }}>
+    <div style={{ padding: 30, fontFamily: 'monospace', color: '#eee', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
       <h2>Shop Phase - Round {tournament.round}</h2>
       <p style={{ color: '#aaa', fontSize: 18 }}>
         Resources: <span style={{ color: '#f1c40f', fontWeight: 'bold' }}>{human.resources}</span>
@@ -63,47 +75,7 @@ export function ShopView() {
         })}
       </div>
 
-      {selectedCard !== null && (
-        <div style={{ marginTop: 24 }}>
-          <p style={{ color: '#aaa' }}>Place in column:</p>
-          <div style={{ display: 'flex', gap: 12 }}>
-            {Array.from({ length: REEL_WIDTH }, (_, col) => {
-              let cardCount = 0;
-              let hasJunk = false;
-              for (let row = 0; row < human.reelHeight; row++) {
-                if (human.reels[row]?.[col]?.card) {
-                  cardCount++;
-                  if (human.reels[row][col].card!.category === 'Junk') hasJunk = true;
-                }
-              }
-              const canPlace = cardCount < human.reelHeight || hasJunk;
-              return (
-                <button
-                  key={col}
-                  onClick={() => canPlace && handleColumnClick(col)}
-                  disabled={!canPlace}
-                  style={{
-                    width: 120,
-                    height: 75,
-                    border: '3px solid #555',
-                    borderRadius: 7,
-                    background: '#1a1a2e',
-                    color: '#eee',
-                    cursor: canPlace ? 'pointer' : 'not-allowed',
-                    fontFamily: 'monospace',
-                    fontSize: 17,
-                    opacity: canPlace ? 1 : 0.4,
-                  }}
-                >
-                  Col {col + 1}<br />({cardCount}/{human.reelHeight})
-                </button>
-              );
-            })}
-          </div>
-        </div>
-      )}
-
-      <div style={{ marginTop: 24, display: 'flex', gap: 12 }}>
+      <div style={{ marginTop: 24, display: 'flex', gap: 12, justifyContent: 'center' }}>
         <button
           onClick={handleReroll}
           disabled={human.resources < 2}
@@ -137,8 +109,53 @@ export function ShopView() {
         </button>
       </div>
 
+      {/* Reel grid with clickable placement slots */}
       <div style={{ marginTop: 30 }}>
-        <ReelGrid player={human} label="Your Reels" compact />
+        <div style={{
+          fontFamily: 'monospace',
+          fontSize: 12,
+          color: '#aaa',
+          marginBottom: 4,
+          fontWeight: 'bold',
+          textAlign: 'center',
+        }}>
+          Your Reels{selectedCard !== null ? ' — click a highlighted slot to place card' : ''}
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 2, alignItems: 'center' }}>
+          {Array.from({ length: human.reelHeight }, (_, row) => (
+            <div key={row} style={{ display: 'flex', gap: 3 }}>
+              {Array.from({ length: REEL_WIDTH }, (_, col) => {
+                const slot = human.reels[row]?.[col];
+                const card = slot?.card ?? null;
+                const isPlaceable = placeableSlots.has(`${row},${col}`);
+
+                if (isPlaceable) {
+                  return (
+                    <div
+                      key={col}
+                      onClick={() => handleSlotClick(row, col)}
+                      style={{ cursor: 'pointer' }}
+                    >
+                      <CardSlot
+                        card={card}
+                        compact
+                        highlight="#27ae60"
+                      />
+                    </div>
+                  );
+                }
+
+                return (
+                  <CardSlot
+                    key={col}
+                    card={card}
+                    compact
+                  />
+                );
+              })}
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

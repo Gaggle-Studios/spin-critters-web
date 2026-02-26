@@ -339,7 +339,8 @@ function growReelHeight(state: TournamentState): void {
 export function shopBuy(
   state: TournamentState,
   cardIndex: number,
-  column: number
+  column: number,
+  row?: number
 ): TournamentState {
   const human = state.players.find((p) => p.id === state.humanPlayerId)!;
   if (!state.shopPack) return state;
@@ -351,21 +352,35 @@ export function shopBuy(
   human.resources -= cost;
   const instance = createCardInstance(card);
 
-  // Find first empty row in column, or add to end
   let placed = false;
-  for (let row = 0; row < human.reelHeight; row++) {
-    if (!human.reels[row][column].card) {
-      human.reels[row][column].card = instance;
-      placed = true;
-      break;
+
+  // If a specific row is provided, place there (replacing junk or filling empty)
+  if (row !== undefined) {
+    const slot = human.reels[row]?.[column];
+    if (slot) {
+      const existing = slot.card;
+      if (!existing || existing.category === 'Junk') {
+        slot.card = instance;
+        placed = true;
+      }
+    }
+  }
+
+  // Fallback: find first empty row in column, or replace last junk
+  if (!placed) {
+    for (let r = 0; r < human.reelHeight; r++) {
+      if (!human.reels[r][column].card) {
+        human.reels[r][column].card = instance;
+        placed = true;
+        break;
+      }
     }
   }
   if (!placed) {
-    // Column is full - replace the last junk card if possible
-    for (let row = human.reelHeight - 1; row >= 0; row--) {
-      const existing = human.reels[row][column].card;
+    for (let r = human.reelHeight - 1; r >= 0; r--) {
+      const existing = human.reels[r][column].card;
       if (existing && existing.category === 'Junk') {
-        human.reels[row][column].card = instance;
+        human.reels[r][column].card = instance;
         placed = true;
         break;
       }
