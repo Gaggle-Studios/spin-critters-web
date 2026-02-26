@@ -1,8 +1,6 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import type { GamePhase } from '../engine/types.ts';
 
-// Each tutorial step: a tooltip with text, positioned relative to the game UI.
-// position: where the tooltip appears, anchor: what region to highlight.
 interface TutorialStep {
   phase: GamePhase;
   title: string;
@@ -62,7 +60,7 @@ const STEPS: TutorialStep[] = [
   {
     phase: 'battle',
     title: 'Attack Phases',
-    text: 'Attacks happen in 3 phases: Fast cards strike first, then Regular, then Slow. Listen for the different sound effects — quick hits are Fast, heavy thuds are Slow.',
+    text: 'Attacks happen in 3 phases: Fast cards strike first, then Regular, then Slow. Listen for the different sound effects — quick whips are Fast, heavy thuds are Slow.',
     position: 'center',
   },
   {
@@ -83,7 +81,7 @@ const STEPS: TutorialStep[] = [
   {
     phase: 'shop',
     title: 'Shop Time',
-    text: 'Spend resources to buy new cards. Common costs 2, Uncommon 4, Rare 7. You can reroll the pack for 2 resources, or skip to save for later. Place purchased cards in your reel.',
+    text: 'Spend resources to buy one card per round. Common costs 2, Uncommon 4, Rare 7. You can reroll the pack for 2 resources, or skip to save for later.',
     position: 'top',
     highlight: 'pack',
   },
@@ -103,6 +101,8 @@ interface TutorialOverlayProps {
 
 export function TutorialOverlay({ phase, onDismiss }: TutorialOverlayProps) {
   const [stepIndex, setStepIndex] = useState(0);
+  // Track which phases have been completed (user clicked "Got it")
+  const completedPhasesRef = useRef<Set<GamePhase>>(new Set());
 
   // Find steps for the current phase
   const phaseSteps = STEPS.filter((s) => s.phase === phase);
@@ -112,10 +112,11 @@ export function TutorialOverlay({ phase, onDismiss }: TutorialOverlayProps) {
     if (stepIndex < phaseSteps.length - 1) {
       setStepIndex(stepIndex + 1);
     } else {
-      // Auto-advance: reset step index so when phase changes, we start at step 0
+      // "Got it" on last step — mark phase as done, hide until next phase
+      completedPhasesRef.current.add(phase);
       setStepIndex(0);
     }
-  }, [stepIndex, phaseSteps.length]);
+  }, [stepIndex, phaseSteps.length, phase]);
 
   const prev = useCallback(() => {
     if (stepIndex > 0) setStepIndex(stepIndex - 1);
@@ -128,12 +129,11 @@ export function TutorialOverlay({ phase, onDismiss }: TutorialOverlayProps) {
     setStepIndex(0);
   }
 
-  if (!current || phase === 'game-over') return null;
+  // Don't show if: no steps for this phase, game over, or user already completed this phase
+  if (!current || phase === 'game-over' || completedPhasesRef.current.has(phase)) return null;
 
   const isLast = stepIndex === phaseSteps.length - 1;
   const isFirst = stepIndex === 0;
-
-  // Position the tooltip
   const positionStyle = getPositionStyle(current.position);
 
   return (
@@ -219,7 +219,6 @@ export function TutorialOverlay({ phase, onDismiss }: TutorialOverlayProps) {
   );
 }
 
-// Tooltip positioning based on 'top', 'center', 'bottom'
 function getPositionStyle(position: string): React.CSSProperties {
   switch (position) {
     case 'top':
@@ -232,8 +231,6 @@ function getPositionStyle(position: string): React.CSSProperties {
   }
 }
 
-// Approximate screen regions to highlight — these are rough bounding boxes.
-// They use viewport-relative units since exact element positions depend on layout.
 function getHighlightBounds(highlight: string): React.CSSProperties {
   switch (highlight) {
     case 'biome-grid':

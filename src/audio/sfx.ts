@@ -46,8 +46,8 @@ const SOUNDS = {
   // Card attacks opponent — punchy hit (regular phase)
   attack: [.6, .05, 450, , .02, .06, 4, 1.8, , , , , , 2, , , , .85],
 
-  // Fast-phase attack — higher pitch, quick/sharp
-  attackFast: [.55, .05, 700, , .015, .04, 4, 1.5, 15, , , , , 1.5, , , , .9],
+  // Fast-phase attack — zippy whip/slash, very short with upward pitch slide
+  attackFast: [.5, .05, 900, , .01, .03, 2, 1, 40, 5, , , , .8, , , , .95],
 
   // Slow-phase attack — lower pitch, heavy/weighty
   attackSlow: [.7, .05, 250, , .04, .12, 4, 2.2, -10, , , , , 2.5, , .1, , .75],
@@ -55,8 +55,8 @@ const SOUNDS = {
   // Big hit (15+ damage) — heavy impact with rumble (regular phase)
   bigHit: [.8, .05, 200, , .04, .2, 4, 2.5, -20, , , , , 3, , .15, , .7, .03],
 
-  // Big hit fast phase — sharp crack
-  bigHitFast: [.75, .05, 500, , .03, .15, 4, 2, 20, , , , , 2.5, , .1, , .75, .02],
+  // Big hit fast phase — sharp whip crack with echo
+  bigHitFast: [.7, .05, 1000, , .02, .12, 2, 1.5, 50, 3, , , , 1.5, , .08, , .8, .02],
 
   // Big hit slow phase — deep thunderous boom
   bigHitSlow: [.9, .05, 120, , .06, .3, 4, 3, -25, , , , , 3.5, , .2, , .6, .04],
