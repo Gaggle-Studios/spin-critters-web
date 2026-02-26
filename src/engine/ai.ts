@@ -132,6 +132,26 @@ export function aiPlaceCard(player: PlayerState, cardDef: CardDefinition): void 
       return;
     }
   }
+
+  // No empty slot — replace a Junk card in this column
+  for (let row = 0; row < player.reelHeight; row++) {
+    const existing = player.reels[row][col].card;
+    if (existing && existing.category === 'Junk') {
+      player.reels[row][col].card = instance;
+      return;
+    }
+  }
+
+  // Still no slot in preferred column — try any column (replace junk)
+  for (let c = 0; c < REEL_WIDTH; c++) {
+    for (let row = 0; row < player.reelHeight; row++) {
+      const existing = player.reels[row][c].card;
+      if (existing && existing.category === 'Junk') {
+        player.reels[row][c].card = instance;
+        return;
+      }
+    }
+  }
 }
 
 export function aiFillWithJunk(player: PlayerState): void {
