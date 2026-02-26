@@ -41,13 +41,35 @@ export function MainMenu() {
       </p>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: 16, minWidth: 280 }}>
-        <button
-          onClick={startSinglePlayer}
-          className="font-display"
-          style={primaryBtnStyle('#27ae60', '#219a52', 'rgba(39, 174, 96, 0.3)')}
-        >
-          Single Player
-        </button>
+        <div style={{ display: 'flex', gap: 8 }}>
+          <button
+            onClick={startSinglePlayer}
+            className="font-display"
+            style={{ ...primaryBtnStyle('#27ae60', '#219a52', 'rgba(39, 174, 96, 0.3)'), flex: 1 }}
+          >
+            Single Player
+          </button>
+          <button
+            onClick={handleStartWithTutorial}
+            className="font-display"
+            title="Start with interactive tutorial"
+            style={{
+              padding: '16px 14px',
+              fontSize: 13,
+              fontWeight: 'bold',
+              background: 'linear-gradient(180deg, #f39c12, #e67e22)',
+              color: '#fff',
+              border: 'none',
+              borderRadius: 8,
+              cursor: 'pointer',
+              transition: 'filter 0.2s',
+              boxShadow: '0 4px 15px rgba(243, 156, 18, 0.3)',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            Tutorial
+          </button>
+        </div>
 
         <button
           onClick={startMultiplayer}
