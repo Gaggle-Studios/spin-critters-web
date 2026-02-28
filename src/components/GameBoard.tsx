@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react';
 import { useGameStore } from '../store/gameStore.ts';
 import { StatusBar } from './StatusBar.tsx';
 import { CritterSelect } from './CritterSelect.tsx';
@@ -8,6 +9,22 @@ import { MainMenu } from './MainMenu.tsx';
 import { LobbyView } from './LobbyView.tsx';
 import { MultiplayerGameView } from './MultiplayerGameView.tsx';
 import { TutorialOverlay } from './TutorialOverlay.tsx';
+
+// Feature flag: set to true to use PixiJS battle renderer, false for DOM fallback
+const USE_PIXI_BATTLE = true;
+
+// Lazy-load PixiJS battle canvas so pixi.js + gsap are code-split
+const LazyPixiBattleCanvas = lazy(() =>
+  import('../pixi/PixiBattleCanvas.tsx').then(m => ({ default: m.PixiBattleCanvas }))
+);
+
+function PixiBattleFallback() {
+  return (
+    <div style={{ padding: 60, color: '#aaa', textAlign: 'center' }}>
+      <div className="font-display" style={{ fontSize: 24 }}>Loading battle renderer...</div>
+    </div>
+  );
+}
 
 export function GameBoard() {
   const mode = useGameStore((s) => s.mode);
@@ -45,7 +62,11 @@ export function GameBoard() {
 
       {tournament.phase === 'critter-select' && <CritterSelect />}
       {tournament.phase === 'initial-draft' && <DraftView />}
-      {tournament.phase === 'battle' && <BattleView />}
+      {tournament.phase === 'battle' && (
+        USE_PIXI_BATTLE
+          ? <Suspense fallback={<PixiBattleFallback />}><LazyPixiBattleCanvas /></Suspense>
+          : <BattleView />
+      )}
       {tournament.phase === 'shop' && <ShopView />}
       {tournament.phase === 'game-over' && (
         <GameOver tournament={tournament} onPlayAgain={playAgain} />
