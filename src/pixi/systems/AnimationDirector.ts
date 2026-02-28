@@ -36,8 +36,9 @@ export class AnimationDirector {
   }
 
   /**
-   * Build and play a GSAP timeline from a batch of BattleEvents.
-   * Calls onComplete when all animations finish.
+   * Build and play animations from a batch of BattleEvents.
+   * Handles spin-result separately (awaits reel animation), then plays
+   * remaining events via GSAP timeline.
    */
   play(
     events: BattleEvent[],
@@ -52,6 +53,51 @@ export class AnimationDirector {
     // Initialize HP state from battle state
     this.initHPState(battle);
 
+    // Handle spin-result first (needs async await for reel animation)
+    const spinEvent = events.find(e => e.type === 'spin-result') as Extract<BattleEvent, { type: 'spin-result' }> | undefined;
+    const remainingEvents = events.filter(e => e.type !== 'spin-result');
+
+    if (spinEvent) {
+      this.playSpinThenEvents(spinEvent, remainingEvents, battle, humanPlayerId);
+    } else {
+      this.playEventTimeline(remainingEvents, battle, humanPlayerId);
+    }
+  }
+
+  /** Play the reel spin animation, then the attack/effect timeline */
+  private async playSpinThenEvents(
+    spinEvent: Extract<BattleEvent, { type: 'spin-result' }>,
+    remainingEvents: BattleEvent[],
+    battle: BattleState,
+    humanPlayerId: string,
+  ): Promise<void> {
+    // Build card data from the spin event
+    const { oppResults, plrResults } = this.buildSpinData(spinEvent, battle, humanPlayerId);
+
+    // Play sound + update battle line
+    playSfx('spin');
+    const overtime = spinEvent.spin > 10 ? ` (OVERTIME! +${spinEvent.spin - 10} dmg)` : '';
+    this.scene.setBattleLineText(`BATTLE LINE - Spin ${spinEvent.spin}${overtime}`);
+
+    // Await the full reel spin animation (slot machine effect)
+    await this.scene.spinReels(oppResults, plrResults);
+
+    // If we were stopped during the spin, bail out
+    if (!this._isPlaying) return;
+
+    // Initialize HP state from spin results (pre-combat values)
+    this.initHPFromSpinEvent(spinEvent, battle, humanPlayerId);
+
+    // Now play the remaining events (attacks, KOs, etc.)
+    this.playEventTimeline(remainingEvents, battle, humanPlayerId);
+  }
+
+  /** Build and play a GSAP timeline for non-spin events */
+  private playEventTimeline(
+    events: BattleEvent[],
+    battle: BattleState,
+    humanPlayerId: string,
+  ): void {
     const tl = gsap.timeline({
       onComplete: () => {
         this._isPlaying = false;
@@ -75,7 +121,7 @@ export class AnimationDirector {
     if (timeOffset === 0) {
       this._isPlaying = false;
       this.masterTimeline = null;
-      onComplete();
+      this.onComplete?.();
     }
   }
 
@@ -151,7 +197,7 @@ export class AnimationDirector {
   ): gsap.core.Timeline | null {
     switch (event.type) {
       case 'spin-result':
-        return this.buildSpinResult(event, battle, humanPlayerId);
+        return null; // Handled separately in playSpinThenEvents
       case 'attack':
         return this.buildAttack(event, battle, humanPlayerId);
       case 'thorns':
@@ -207,14 +253,12 @@ export class AnimationDirector {
 
   // ---- Event Builders ----
 
-  private buildSpinResult(
+  /** Build PixiCardData arrays from a spin-result event */
+  private buildSpinData(
     event: Extract<BattleEvent, { type: 'spin-result' }>,
     battle: BattleState,
     humanPlayerId: string,
-  ): gsap.core.Timeline {
-    const tl = gsap.timeline();
-
-    // Build PixiCardData arrays from the event
+  ): { oppResults: (PixiCardData | null)[]; plrResults: (PixiCardData | null)[] } {
     const oppResults: (PixiCardData | null)[] = [null, null, null, null, null];
     const plrResults: (PixiCardData | null)[] = [null, null, null, null, null];
 
@@ -226,7 +270,6 @@ export class AnimationDirector {
 
     for (const ac of humanActive) {
       const fullCard = humanActiveCards[ac.col];
-      // Use event data for health/KO (pre-combat state), but enrich with card metadata
       plrResults[ac.col] = {
         instanceId: fullCard?.instanceId ?? `ev-${ac.col}`,
         definitionId: ac.cardId,
@@ -237,7 +280,7 @@ export class AnimationDirector {
         attack: ac.attack,
         health: ac.health,
         maxHealth: ac.maxHealth,
-        isKO: false, // Always show alive at spin start
+        isKO: false,
         level: fullCard?.level ?? 1,
         keywords: fullCard?.keywords.map(k => ({ name: k.name, value: k.value })) ?? [],
       };
@@ -261,64 +304,34 @@ export class AnimationDirector {
       };
     }
 
-    // Play sound
-    tl.call(() => playSfx('spin'));
+    return { oppResults, plrResults };
+  }
 
-    // Update battle line text
-    tl.call(() => {
-      const overtime = event.spin > 10 ? ` (OVERTIME! +${event.spin - 10} dmg)` : '';
-      this.scene.setBattleLineText(`BATTLE LINE - Spin ${event.spin}${overtime}`);
-    });
+  /** Initialize progressive HP tracking from a spin-result event */
+  private initHPFromSpinEvent(
+    event: Extract<BattleEvent, { type: 'spin-result' }>,
+    battle: BattleState,
+    humanPlayerId: string,
+  ): void {
+    const isP1Human = battle.player1.id === humanPlayerId;
+    const humanActive = isP1Human ? event.player1Active : event.player2Active;
+    const oppActive = isP1Human ? event.player2Active : event.player1Active;
 
-    // Show cards immediately (spinReels is async and conflicts with the GSAP timeline)
-    tl.call(() => {
-      this.scene.setActiveCards(oppResults, plrResults);
-    });
-
-    // Brief flash effect on each card to indicate "spin landed"
-    for (let col = 0; col < 5; col++) {
-      if (plrResults[col] || oppResults[col]) {
-        const delay = col * 0.08;
-        tl.call(() => {
-          // Flash the card by briefly setting highlight, then removing it
-          if (plrResults[col]) {
-            const card = this.scene.getPlayerCard(col);
-            if (card) {
-              card.alpha = 0.5;
-              gsap.to(card, { alpha: 1, duration: 0.3, ease: 'power2.out' });
-            }
-          }
-          if (oppResults[col]) {
-            const card = this.scene.getOpponentCard(col);
-            if (card) {
-              card.alpha = 0.5;
-              gsap.to(card, { alpha: 1, duration: 0.3, ease: 'power2.out' });
-            }
-          }
-        }, [], delay);
-      }
+    for (const ac of humanActive) {
+      this.hpState.set(`${humanPlayerId}-${ac.col}`, {
+        health: ac.health,
+        maxHealth: ac.maxHealth,
+        isKO: false,
+      });
     }
-
-    // Initialize HP from spin result
-    tl.call(() => {
-      for (const ac of humanActive) {
-        this.hpState.set(`${humanPlayerId}-${ac.col}`, {
-          health: ac.health,
-          maxHealth: ac.maxHealth,
-          isKO: false,
-        });
-      }
-      const oppId = isP1Human ? battle.player2.id : battle.player1.id;
-      for (const ac of oppActive) {
-        this.hpState.set(`${oppId}-${ac.col}`, {
-          health: ac.health,
-          maxHealth: ac.maxHealth,
-          isKO: false,
-        });
-      }
-    });
-
-    return tl;
+    const oppId = isP1Human ? battle.player2.id : battle.player1.id;
+    for (const ac of oppActive) {
+      this.hpState.set(`${oppId}-${ac.col}`, {
+        health: ac.health,
+        maxHealth: ac.maxHealth,
+        isKO: false,
+      });
+    }
   }
 
   private buildAttack(
