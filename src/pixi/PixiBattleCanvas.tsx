@@ -53,6 +53,7 @@ export function PixiBattleCanvas() {
   const battleIdRef = useRef(tournament.currentBattle?.player2?.id);
   const prevEventsRef = useRef<BattleEvent[]>([]);
   const [isDirectorPlaying, setIsDirectorPlaying] = useState(false);
+  const [texturesLoaded, setTexturesLoaded] = useState(false);
   const [hoveredCard, setHoveredCard] = useState<{
     card: CardInstance;
     def: CardDefinition | null;
@@ -155,7 +156,8 @@ export function PixiBattleCanvas() {
         }
       }
     }
-    preloadCardTextures(cardIds);
+    setTexturesLoaded(false);
+    preloadCardTextures(cardIds).then(() => setTexturesLoaded(true));
   }, [battle?.player1.id, battle?.player2.id]);
 
   // Sync card state to scene whenever battle state changes and scene is ready
@@ -192,7 +194,7 @@ export function PixiBattleCanvas() {
 
     // Overtime overlay
     scene.overtimeOverlay.setIntensity(battle.currentSpin > 10 ? battle.currentSpin - 10 : 0);
-  }, [battle, sceneReady]);
+  }, [battle, sceneReady, texturesLoaded]);
 
   // Handle pending events -> animate via AnimationDirector
   useEffect(() => {
