@@ -2,13 +2,27 @@ import { useEffect, useRef, useState, useCallback } from 'react';
 import { useGameStore } from '../store/gameStore';
 import { BattleLog } from '../components/BattleLog';
 import { BattleIntro } from '../components/BattleIntro';
+import { CardZoom } from '../components/CardZoom';
 import { playSfx } from '../audio/sfx';
 import { PixiBattleApp } from './PixiBattleApp';
 import { BattleScene } from './scenes/BattleScene';
 import { AnimationDirector } from './systems/AnimationDirector';
 import { getActiveCardsData, getReelGridData } from './systems/CardStateSync';
 import { preloadCardTextures } from './utils/AssetLoader';
-import type { Biome, BattleEvent } from '../engine/types';
+import { CARD_W, CARD_H } from './objects/PixiCard';
+import { loadCritters } from '../engine/cards';
+import type { Biome, BattleEvent, CardInstance, CardDefinition } from '../engine/types';
+
+// Cache critter definitions (they never change)
+let critterDefsCache: CardDefinition[] | null = null;
+function getCritterDefs(): CardDefinition[] {
+  if (!critterDefsCache) critterDefsCache = loadCritters();
+  return critterDefsCache;
+}
+
+const COMPACT_W = 95;
+const COMPACT_H = 132;
+const COMPACT_GAP = 4;
 
 /** Compute canvas height based on reel rows */
 function computeCanvasHeight(reelHeight: number): number {
@@ -39,6 +53,12 @@ export function PixiBattleCanvas() {
   const battleIdRef = useRef(tournament.currentBattle?.player2?.id);
   const prevEventsRef = useRef<BattleEvent[]>([]);
   const [isDirectorPlaying, setIsDirectorPlaying] = useState(false);
+  const [hoveredCard, setHoveredCard] = useState<{
+    card: CardInstance;
+    def: CardDefinition | null;
+    rect: DOMRect;
+  } | null>(null);
+  const hoverTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const battle = tournament.currentBattle;
   const humanId = tournament.humanPlayerId;
@@ -238,6 +258,139 @@ export function PixiBattleCanvas() {
     setShowIntro(false);
   }, []);
 
+  // Card hover: hit-test mouse position against card layout positions
+  const handleCanvasMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    const container = containerRef.current;
+    const scene = sceneRef.current;
+    const currentBattle = useGameStore.getState().tournament.currentBattle;
+    if (!container || !scene || !currentBattle) {
+      if (hoveredCard) setHoveredCard(null);
+      return;
+    }
+
+    const containerRect = container.getBoundingClientRect();
+    const layout = scene.layout;
+
+    // Convert client coords to scene coords (accounting for CSS scaling)
+    const scaleX = layout.width / containerRect.width;
+    const scaleY = layout.height / containerRect.height;
+    const sx = (e.clientX - containerRect.left) * scaleX;
+    const sy = (e.clientY - containerRect.top) * scaleY;
+
+    // Helper: determine column from x position for the active rows
+    const getActiveCol = (x: number): number => {
+      const relX = x - layout.rowOffsetX;
+      if (relX < 0) return -1;
+      const colSlot = relX / (CARD_W + layout.cardGap);
+      const col = Math.floor(colSlot);
+      if (col >= 5) return -1;
+      // Check we're within the card, not in the gap
+      const withinCard = relX - col * (CARD_W + layout.cardGap);
+      if (withinCard > CARD_W) return -1;
+      return col;
+    };
+
+    // Helper: determine mini reel card from position
+    const getMiniReelPos = (x: number, y: number): { row: number; col: number } | null => {
+      const miniY = y - layout.miniReelY;
+      if (miniY < 0) return null;
+      const totalW = 5 * COMPACT_W + 4 * COMPACT_GAP;
+      const offsetX = (layout.width - totalW) / 2;
+      const relX = x - offsetX;
+      if (relX < 0) return null;
+      const col = Math.floor(relX / (COMPACT_W + COMPACT_GAP));
+      if (col >= 5) return null;
+      const withinCard = relX - col * (COMPACT_W + COMPACT_GAP);
+      if (withinCard > COMPACT_W) return null;
+      const row = Math.floor(miniY / (COMPACT_H + COMPACT_GAP));
+      const withinRow = miniY - row * (COMPACT_H + COMPACT_GAP);
+      if (withinRow > COMPACT_H) return null;
+      return { row, col };
+    };
+
+    let foundCard: CardInstance | null = null;
+    let cardScreenRect: DOMRect | null = null;
+
+    // Check opponent active row
+    if (sy >= layout.opponentRowY && sy <= layout.opponentRowY + CARD_H) {
+      const col = getActiveCol(sx);
+      if (col >= 0) {
+        foundCard = currentBattle.player2ActiveCards[col] ?? null;
+        if (foundCard) {
+          const cardX = layout.rowOffsetX + col * (CARD_W + layout.cardGap);
+          cardScreenRect = new DOMRect(
+            containerRect.left + cardX / scaleX,
+            containerRect.top + layout.opponentRowY / scaleY,
+            CARD_W / scaleX,
+            CARD_H / scaleY,
+          );
+        }
+      }
+    }
+    // Check player active row
+    else if (sy >= layout.playerRowY && sy <= layout.playerRowY + CARD_H) {
+      const col = getActiveCol(sx);
+      if (col >= 0) {
+        foundCard = currentBattle.player1ActiveCards[col] ?? null;
+        if (foundCard) {
+          const cardX = layout.rowOffsetX + col * (CARD_W + layout.cardGap);
+          cardScreenRect = new DOMRect(
+            containerRect.left + cardX / scaleX,
+            containerRect.top + layout.playerRowY / scaleY,
+            CARD_W / scaleX,
+            CARD_H / scaleY,
+          );
+        }
+      }
+    }
+    // Check mini reel grid
+    else if (sy >= layout.miniReelY) {
+      const pos = getMiniReelPos(sx, sy);
+      if (pos) {
+        const slot = currentBattle.player1.reels[pos.row]?.[pos.col];
+        foundCard = slot?.card ?? null;
+        if (foundCard) {
+          const totalW = 5 * COMPACT_W + 4 * COMPACT_GAP;
+          const offsetX = (layout.width - totalW) / 2;
+          const cardX = offsetX + pos.col * (COMPACT_W + COMPACT_GAP);
+          const cardY = layout.miniReelY + pos.row * (COMPACT_H + COMPACT_GAP);
+          cardScreenRect = new DOMRect(
+            containerRect.left + cardX / scaleX,
+            containerRect.top + cardY / scaleY,
+            COMPACT_W / scaleX,
+            COMPACT_H / scaleY,
+          );
+        }
+      }
+    }
+
+    if (foundCard && cardScreenRect) {
+      // Debounce hover to prevent flicker
+      if (hoveredCard?.card.instanceId !== foundCard.instanceId) {
+        if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
+        hoverTimeoutRef.current = setTimeout(() => {
+          const allDefs = [...getCritterDefs(), ...useGameStore.getState().tournament.cardPool];
+          const def = allDefs.find(d => d.cardId === foundCard!.definitionId) ?? null;
+          setHoveredCard({ card: foundCard!, def, rect: cardScreenRect! });
+        }, 80);
+      }
+    } else {
+      if (hoverTimeoutRef.current) {
+        clearTimeout(hoverTimeoutRef.current);
+        hoverTimeoutRef.current = null;
+      }
+      if (hoveredCard) setHoveredCard(null);
+    }
+  }, [hoveredCard]);
+
+  const handleCanvasMouseLeave = useCallback(() => {
+    if (hoverTimeoutRef.current) {
+      clearTimeout(hoverTimeoutRef.current);
+      hoverTimeoutRef.current = null;
+    }
+    setHoveredCard(null);
+  }, []);
+
   if (!battle) return <div style={{ padding: 20, color: '#eee' }}>No active battle.</div>;
 
   const human = battle.player1;
@@ -259,6 +412,8 @@ export function PixiBattleCanvas() {
       {/* Canvas container */}
       <div
         ref={containerRef}
+        onMouseMove={handleCanvasMouseMove}
+        onMouseLeave={handleCanvasMouseLeave}
         style={{
           width: '100%',
           maxWidth: 800,
@@ -306,6 +461,15 @@ export function PixiBattleCanvas() {
           </div>
         </div>
       </div>
+
+      {/* Card hover zoom overlay */}
+      {hoveredCard && (
+        <CardZoom
+          card={hoveredCard.card}
+          definition={hoveredCard.def}
+          anchorRect={hoveredCard.rect}
+        />
+      )}
 
       {/* Controls */}
       <div style={{ marginTop: 14, display: 'flex', gap: 12, alignItems: 'center', justifyContent: 'center', zIndex: 1 }}>

@@ -106,19 +106,8 @@ export class PixiReelColumn extends Container {
         duration,
         ease: 'power2.out', // Decelerating ease
         onComplete: () => {
-          // Bounce effect
-          gsap.to(this.resultCard, {
-            y: this.resultCard.y - 6,
-            duration: 0.08,
-            yoyo: true,
-            repeat: 1,
-            ease: 'power1.inOut',
-            onComplete: () => {
-              // Flash glow on land
-              this.flashLand(resultData);
-              resolve();
-            },
-          });
+          this.flashLand(resultData);
+          resolve();
         },
       });
     });
