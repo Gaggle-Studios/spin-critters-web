@@ -68,17 +68,17 @@ export class PixiCard extends Container {
     this.bg = new Graphics();
     this.addChild(this.bg);
 
-    // Name
+    // Name (clone style so per-card fill changes don't leak)
     this.nameText = new Text({
       text: '',
-      style: compact ? TEXT_STYLES.cardName : TEXT_STYLES.cardNameLarge,
+      style: (compact ? TEXT_STYLES.cardName : TEXT_STYLES.cardNameLarge).clone(),
     });
     this.nameText.x = 4;
     this.nameText.y = 3;
     this.addChild(this.nameText);
 
     // Level badge
-    this.levelText = new Text({ text: '', style: TEXT_STYLES.cardLevel });
+    this.levelText = new Text({ text: '', style: TEXT_STYLES.cardLevel.clone() });
     this.levelText.anchor.set(1, 0);
     this.levelText.x = this._w - 4;
     this.levelText.y = 3;
@@ -89,12 +89,12 @@ export class PixiCard extends Container {
     this.keywordContainer = new Container();
     this.addChild(this.keywordContainer);
 
-    // Attack / Health
-    this.attackText = new Text({ text: '', style: TEXT_STYLES.cardAttack });
+    // Attack / Health (clone styles for per-card fill changes)
+    this.attackText = new Text({ text: '', style: TEXT_STYLES.cardAttack.clone() });
     this.attackText.x = 6;
     this.addChild(this.attackText);
 
-    this.healthText = new Text({ text: '', style: TEXT_STYLES.cardHealth });
+    this.healthText = new Text({ text: '', style: TEXT_STYLES.cardHealth.clone() });
     this.healthText.anchor.set(1, 0);
     this.healthText.x = this._w - 6;
     this.addChild(this.healthText);
