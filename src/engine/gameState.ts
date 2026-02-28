@@ -303,8 +303,8 @@ export function finishBattle(state: TournamentState): TournamentState {
   const human = state.players.find((p) => p.id === state.humanPlayerId)!;
   human.battlesCompleted++;
 
-  // Grow reel height every other battle
-  if (human.battlesCompleted % 2 === 0) {
+  // Grow reel height every 4 battles
+  if (human.battlesCompleted % 4 === 0) {
     growReelHeight(state);
   }
 
