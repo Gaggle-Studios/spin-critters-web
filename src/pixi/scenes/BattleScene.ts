@@ -60,6 +60,16 @@ export class BattleScene extends Container {
     this.addChild(this.vfxLayer);
     this.addChild(this.uiLayer);
 
+    // DEBUG: bright test rectangle to confirm rendering works
+    const debugRect = new Graphics();
+    debugRect.rect(10, 10, 200, 30);
+    debugRect.fill({ color: 0xFF0000 });
+    this.uiLayer.addChild(debugRect);
+    const debugText = new Text({ text: `PIXI OK ${width}x${height}`, style: { fill: 0xFFFFFF, fontSize: 16 } });
+    debugText.x = 15;
+    debugText.y = 12;
+    this.uiLayer.addChild(debugText);
+
     // Particles
     this.particleManager = new ParticleManager(this.bgLayer, width, height);
 

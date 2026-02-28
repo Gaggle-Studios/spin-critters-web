@@ -257,6 +257,11 @@ export function PixiBattleCanvas() {
         />
       )}
 
+      {/* Debug info */}
+      <div style={{ background: '#1a1a2e', border: '1px solid #f1c40f', padding: '6px 14px', marginBottom: 8, fontSize: 12, color: '#f1c40f', borderRadius: 6, maxWidth: 800, width: '100%' }}>
+        DEBUG: sceneReady={String(sceneReady)} | showIntro={String(showIntro)} | isDirectorPlaying={String(isDirectorPlaying)} | reelHeight={human.reelHeight} | canvasH={computeCanvasHeight(human.reelHeight)} | activeCards={battle.player1ActiveCards.filter(Boolean).length}p/{battle.player2ActiveCards.filter(Boolean).length}o
+      </div>
+
       {/* Canvas container */}
       <div
         ref={containerRef}
@@ -267,6 +272,7 @@ export function PixiBattleCanvas() {
           position: 'relative',
           overflow: 'hidden',
           borderRadius: 8,
+          border: '2px solid #f1c40f', // Debug border to see canvas bounds
         }}
       >
         <canvas
