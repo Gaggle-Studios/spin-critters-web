@@ -242,44 +242,21 @@ export class PixiCard extends Container {
     this.glowGraphics.alpha = 0;
     this.highlightGraphics.clear();
     this.highlightGraphics.alpha = 0;
-    this.alpha = 0.4;
+    this.alpha = 0.7;
 
     // Dark empty slot background
     this.bg.roundRect(0, 0, w, h, CORNER_RADIUS);
-    this.bg.fill({ color: 0x1a1a2e });
+    this.bg.fill({ color: 0x1e1e3a });
 
-    // Dashed border effect (draw small segments)
-    const dashLen = 8;
-    const gapLen = 6;
-    const borderColor = 0x444466;
-
-    // Top and bottom edges
-    for (let x = CORNER_RADIUS; x < w - CORNER_RADIUS; x += dashLen + gapLen) {
-      const end = Math.min(x + dashLen, w - CORNER_RADIUS);
-      this.bg.moveTo(x, 1);
-      this.bg.lineTo(end, 1);
-      this.bg.stroke({ color: borderColor, width: 1 });
-      this.bg.moveTo(x, h - 1);
-      this.bg.lineTo(end, h - 1);
-      this.bg.stroke({ color: borderColor, width: 1 });
-    }
-
-    // Left and right edges
-    for (let y = CORNER_RADIUS; y < h - CORNER_RADIUS; y += dashLen + gapLen) {
-      const end = Math.min(y + dashLen, h - CORNER_RADIUS);
-      this.bg.moveTo(1, y);
-      this.bg.lineTo(1, end);
-      this.bg.stroke({ color: borderColor, width: 1 });
-      this.bg.moveTo(w - 1, y);
-      this.bg.lineTo(w - 1, end);
-      this.bg.stroke({ color: borderColor, width: 1 });
-    }
+    // Solid border
+    this.bg.roundRect(0, 0, w, h, CORNER_RADIUS);
+    this.bg.stroke({ color: 0x555588, width: 2 });
 
     // Question mark in center
     this.nameText.text = '?';
-    this.nameText.style.fill = 0x444466;
-    this.nameText.x = w / 2 - this.nameText.width / 2;
-    this.nameText.y = h / 2 - this.nameText.height / 2;
+    this.nameText.style.fill = 0x666699;
+    this.nameText.x = w / 2 - 6;
+    this.nameText.y = h / 2 - 10;
   }
 
   private updateArt(d: PixiCardData, w: number): void {

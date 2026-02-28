@@ -6,9 +6,16 @@ import { playSfx } from '../audio/sfx';
 import { PixiBattleApp } from './PixiBattleApp';
 import { BattleScene } from './scenes/BattleScene';
 import { AnimationDirector } from './systems/AnimationDirector';
-import { getActiveCardsData } from './systems/CardStateSync';
+import { getActiveCardsData, getReelGridData } from './systems/CardStateSync';
 import { preloadCardTextures } from './utils/AssetLoader';
 import type { Biome, BattleEvent } from '../engine/types';
+
+/** Compute canvas height based on reel rows */
+function computeCanvasHeight(reelHeight: number): number {
+  // opponent row(170) + gap(16) + battleline(24) + gap(6) + player row(170) + gap(24) + mini reel
+  const miniReelH = reelHeight * (132 + 4) - 4;
+  return 20 + 170 + 16 + 24 + 6 + 170 + 24 + miniReelH + 20;
+}
 
 export function PixiBattleCanvas() {
   const tournament = useGameStore((s) => s.tournament);
@@ -142,6 +149,10 @@ export function PixiBattleCanvas() {
     const plrData = getActiveCardsData(battle, battle.player1.id);
     scene.setActiveCards(oppData, plrData);
 
+    // Mini reel grid
+    const reelGrid = getReelGridData(battle, battle.player1.id);
+    scene.setMiniReel(reelGrid, -1);
+
     // Dominant biome for background particles
     const biomeCounts: Record<string, number> = {};
     for (const card of battle.player1ActiveCards) {
@@ -219,6 +230,8 @@ export function PixiBattleCanvas() {
       const oppData = getActiveCardsData(finalBattle, finalBattle.player2.id);
       const plrData = getActiveCardsData(finalBattle, finalBattle.player1.id);
       sceneRef.current.setActiveCards(oppData, plrData);
+      const reelGrid = getReelGridData(finalBattle, finalBattle.player1.id);
+      sceneRef.current.setMiniReel(reelGrid, -1);
     }
   }, []);
 
@@ -250,7 +263,7 @@ export function PixiBattleCanvas() {
         style={{
           width: '100%',
           maxWidth: 800,
-          height: 520,
+          height: computeCanvasHeight(human.reelHeight),
           position: 'relative',
           overflow: 'hidden',
           borderRadius: 8,

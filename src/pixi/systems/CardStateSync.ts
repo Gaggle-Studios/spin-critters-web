@@ -62,3 +62,19 @@ export function getActiveCardsData(battle: BattleState, playerId: string): (Pixi
   const activeCards = isPlayer1 ? battle.player1ActiveCards : battle.player2ActiveCards;
   return activeCards.map(c => cardToPixiData(c));
 }
+
+/** Convert a player's full reel grid to PixiCardData[][] for the mini reel display */
+export function getReelGridData(battle: BattleState, playerId: string): (PixiCardData | null)[][] {
+  const isPlayer1 = battle.player1.id === playerId;
+  const player = isPlayer1 ? battle.player1 : battle.player2;
+  const result: (PixiCardData | null)[][] = [];
+  for (let row = 0; row < player.reels.length; row++) {
+    const rowData: (PixiCardData | null)[] = [];
+    for (let col = 0; col < 5; col++) {
+      const slot = player.reels[row]?.[col];
+      rowData.push(slot?.card ? cardToPixiData(slot.card) : null);
+    }
+    result.push(rowData);
+  }
+  return result;
+}
