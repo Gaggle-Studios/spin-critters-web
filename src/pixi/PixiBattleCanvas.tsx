@@ -139,10 +139,9 @@ export function PixiBattleCanvas() {
   }, [battle?.player1.id, battle?.player2.id]);
 
   // Sync card state to scene whenever battle state changes and scene is ready
+  // Always sync - even during animation - so cards are always visible
   useEffect(() => {
     if (!battle || !sceneReady || !sceneRef.current) return;
-    // Don't sync during animation - the AnimationDirector handles progressive updates
-    if (isDirectorPlaying) return;
 
     const scene = sceneRef.current;
     const oppData = getActiveCardsData(battle, battle.player2.id);
@@ -173,7 +172,7 @@ export function PixiBattleCanvas() {
 
     // Overtime overlay
     scene.overtimeOverlay.setIntensity(battle.currentSpin > 10 ? battle.currentSpin - 10 : 0);
-  }, [battle, sceneReady, isDirectorPlaying]);
+  }, [battle, sceneReady]);
 
   // Handle pending events -> animate via AnimationDirector
   useEffect(() => {

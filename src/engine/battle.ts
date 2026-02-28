@@ -332,11 +332,11 @@ export function executeSpin(battle: BattleState): BattleState {
     const c2 = p2Active[col];
     if (c1) {
       log.push({ spin, phase: 'spin', message: `${p1.name} Col ${col + 1}: ${c1.name} (${c1.currentAttack}/${c1.currentHealth})` });
-      p1ActiveSnapshot.push({ col, cardName: c1.name, cardId: c1.instanceId, health: c1.currentHealth, maxHealth: c1.maxHealth, attack: c1.currentAttack });
+      p1ActiveSnapshot.push({ col, cardName: c1.name, cardId: c1.definitionId, health: c1.currentHealth, maxHealth: c1.maxHealth, attack: c1.currentAttack });
     }
     if (c2) {
       log.push({ spin, phase: 'spin', message: `${p2.name} Col ${col + 1}: ${c2.name} (${c2.currentAttack}/${c2.currentHealth})` });
-      p2ActiveSnapshot.push({ col, cardName: c2.name, cardId: c2.instanceId, health: c2.currentHealth, maxHealth: c2.maxHealth, attack: c2.currentAttack });
+      p2ActiveSnapshot.push({ col, cardName: c2.name, cardId: c2.definitionId, health: c2.currentHealth, maxHealth: c2.maxHealth, attack: c2.currentAttack });
     }
   }
   events.push({ type: 'spin-result', spin, player1Id: p1.id, player2Id: p2.id, player1Active: p1ActiveSnapshot, player2Active: p2ActiveSnapshot });
