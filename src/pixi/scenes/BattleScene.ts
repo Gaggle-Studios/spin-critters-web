@@ -227,27 +227,35 @@ export class BattleScene extends Container {
 
   /** Set mini reel grid (compact view of all player cards) */
   setMiniReel(reelData: (PixiCardData | null)[][], activeRow: number): void {
-    // Clear existing
-    this.miniReelContainer.removeChildren();
-    this.miniReelCards = [];
-
     const compactW = 95;
     const compactH = 132;
     const gap = 4;
     const totalW = COLUMNS * compactW + (COLUMNS - 1) * gap;
     const offsetX = (this.layout.width - totalW) / 2;
 
+    // Reuse existing cards when possible, create new ones when grid grows
     for (let row = 0; row < reelData.length; row++) {
-      const rowCards: PixiCard[] = [];
+      if (!this.miniReelCards[row]) this.miniReelCards[row] = [];
       for (let col = 0; col < COLUMNS; col++) {
-        const card = new PixiCard(true);
+        let card = this.miniReelCards[row][col];
+        if (!card) {
+          card = new PixiCard(true);
+          card.x = offsetX + col * (compactW + gap);
+          card.y = row * (compactH + gap);
+          this.miniReelContainer.addChild(card);
+          this.miniReelCards[row][col] = card;
+        }
         card.setData(reelData[row]?.[col] ?? null);
-        card.x = offsetX + col * (compactW + gap);
-        card.y = row * (compactH + gap);
-        this.miniReelContainer.addChild(card);
-        rowCards.push(card);
       }
-      this.miniReelCards.push(rowCards);
+    }
+
+    // Remove excess rows if grid shrunk
+    while (this.miniReelCards.length > reelData.length) {
+      const row = this.miniReelCards.pop()!;
+      for (const card of row) {
+        this.miniReelContainer.removeChild(card);
+        card.destroy();
+      }
     }
   }
 
