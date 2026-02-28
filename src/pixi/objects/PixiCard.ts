@@ -350,8 +350,18 @@ export class PixiCard extends Container {
       this.highlightGraphics.alpha = 0;
       return;
     }
+    // Outer glow (soft, wide)
+    this.highlightGraphics.roundRect(-10, -10, this._w + 20, this._h + 20, CORNER_RADIUS + 6);
+    this.highlightGraphics.fill({ color: this._highlightColor, alpha: 0.25 });
+    // Mid glow
+    this.highlightGraphics.roundRect(-6, -6, this._w + 12, this._h + 12, CORNER_RADIUS + 4);
+    this.highlightGraphics.fill({ color: this._highlightColor, alpha: 0.2 });
+    // Inner bright border
     this.highlightGraphics.roundRect(-3, -3, this._w + 6, this._h + 6, CORNER_RADIUS + 2);
-    this.highlightGraphics.stroke({ color: this._highlightColor, width: 3, alpha: 0.8 });
+    this.highlightGraphics.stroke({ color: this._highlightColor, width: 4, alpha: 0.95 });
+    // White-hot inner edge
+    this.highlightGraphics.roundRect(-1, -1, this._w + 2, this._h + 2, CORNER_RADIUS + 1);
+    this.highlightGraphics.stroke({ color: 0xFFFFFF, width: 2, alpha: 0.6 });
     this.highlightGraphics.alpha = 1;
     // Re-draw border
     this.redraw();

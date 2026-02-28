@@ -111,6 +111,12 @@ const SOUNDS = {
 
   // Bolster buff — power surge
   bolster: [.35, 0, 400, .02, .08, .12, 0, 1, 15, , 80, .04],
+
+  // CRIT cascade ding — loud bright chime with sparkle for each card
+  critDing: [.7, 0, 900, , .04, .1, 0, 1.2, 30, , 200, .03, , , , , , .95],
+
+  // Electricity arc — short buzzy crackle
+  critArc: [.25, .15, 1200, , .02, .04, 3, 1.5, -40, 5, , , , 1.5, , , , .7],
 } as const;
 
 export type SfxName = keyof typeof SOUNDS;
