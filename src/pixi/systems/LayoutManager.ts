@@ -33,7 +33,8 @@ export function computeLayout(width: number, height: number): BattleLayout {
   const rowOffsetX = (width - rowWidth) / 2;
 
   // Vertical layout: opponent row, battle line, player row, mini reel
-  const topPadding = 20;
+  // Extra top padding so HUD overlay doesn't overlap opponent cards
+  const topPadding = 46;
   const opponentRowY = topPadding;
   const battleLineY = opponentRowY + cardH + 16;
   const playerRowY = battleLineY + 30;

@@ -23,12 +23,28 @@ export class AnimationDirector {
   private masterTimeline: gsap.core.Timeline | null = null;
   private _isPlaying = false;
   private onComplete: (() => void) | null = null;
+  private _timeScale = 1;
 
   // Progressive HP state (keyed by "playerId-col")
   private hpState = new Map<string, ProgressiveHP>();
 
   constructor(scene: BattleScene) {
     this.scene = scene;
+  }
+
+  /** Set playback speed (1 = normal, 2 = double speed) */
+  setTimeScale(scale: number): void {
+    this._timeScale = scale;
+    // Apply to active timeline immediately
+    if (this.masterTimeline) {
+      this.masterTimeline.timeScale(scale);
+    }
+    // Also set global GSAP timeScale to affect reel spins
+    gsap.globalTimeline.timeScale(scale);
+  }
+
+  get timeScale(): number {
+    return this._timeScale;
   }
 
   get isPlaying(): boolean {
@@ -105,6 +121,7 @@ export class AnimationDirector {
         this.onComplete?.();
       },
     });
+    tl.timeScale(this._timeScale);
     this.masterTimeline = tl;
 
     let timeOffset = 0;
@@ -708,5 +725,7 @@ export class AnimationDirector {
 
   destroy(): void {
     this.stop();
+    // Reset global timeScale so other pages aren't affected
+    gsap.globalTimeline.timeScale(1);
   }
 }

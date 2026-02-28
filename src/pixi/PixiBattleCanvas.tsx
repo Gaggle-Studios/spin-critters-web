@@ -26,9 +26,9 @@ const COMPACT_GAP = 4;
 
 /** Compute canvas height based on reel rows */
 function computeCanvasHeight(reelHeight: number): number {
-  // opponent row(170) + gap(16) + battleline(24) + gap(6) + player row(170) + gap(24) + mini reel
+  // topPad(46) + opponent row(170) + gap(16) + battleline(24) + gap(6) + player row(170) + gap(24) + mini reel
   const miniReelH = reelHeight * (132 + 4) - 4;
-  return 20 + 170 + 16 + 24 + 6 + 170 + 24 + miniReelH + 20;
+  return 46 + 170 + 16 + 24 + 6 + 170 + 24 + miniReelH + 20;
 }
 
 export function PixiBattleCanvas() {
@@ -54,6 +54,7 @@ export function PixiBattleCanvas() {
   const prevEventsRef = useRef<BattleEvent[]>([]);
   const [isDirectorPlaying, setIsDirectorPlaying] = useState(false);
   const [texturesLoaded, setTexturesLoaded] = useState(false);
+  const [speedX2, setSpeedX2] = useState(false);
   const [hoveredCard, setHoveredCard] = useState<{
     card: CardInstance;
     def: CardDefinition | null;
@@ -258,6 +259,14 @@ export function PixiBattleCanvas() {
       const reelGrid = getReelGridData(finalBattle, finalBattle.player1.id);
       sceneRef.current.setMiniReel(reelGrid, -1);
     }
+  }, []);
+
+  const handleToggleSpeed = useCallback(() => {
+    setSpeedX2(prev => {
+      const newSpeed = !prev;
+      directorRef.current?.setTimeScale(newSpeed ? 2 : 1);
+      return newSpeed;
+    });
   }, []);
 
   const handleIntroComplete = useCallback(() => {
@@ -507,6 +516,25 @@ export function PixiBattleCanvas() {
               <div className="font-display" style={{ fontSize: 18, color: '#f1c40f', fontWeight: 'bold' }}>
                 Auto-battling...
               </div>
+              <button
+                onClick={handleToggleSpeed}
+                className="font-display"
+                style={{
+                  padding: '12px 20px',
+                  fontSize: 16,
+                  fontWeight: 'bold',
+                  background: speedX2
+                    ? 'linear-gradient(180deg, #9b59b6, #8e44ad)'
+                    : 'linear-gradient(180deg, #7f8c8d, #606c70)',
+                  color: '#fff',
+                  border: speedX2 ? '2px solid #c39bd3' : '2px solid transparent',
+                  borderRadius: 8,
+                  cursor: 'pointer',
+                  letterSpacing: 1,
+                }}
+              >
+                {speedX2 ? '2X' : '1X'}
+              </button>
               <button
                 onClick={handleSkipAll}
                 className="font-display"
