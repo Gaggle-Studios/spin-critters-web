@@ -160,8 +160,9 @@ export function PixiBattleCanvas() {
     preloadCardTextures(cardIds).then(() => setTexturesLoaded(true));
   }, [battle?.player1.id, battle?.player2.id]);
 
-  // Sync card state to scene whenever battle state changes and scene is ready
-  // Always sync - even during animation - so cards are always visible
+  // Sync card state to scene whenever battle state changes and scene is ready.
+  // Depend on `tournament` (new reference each spin) rather than `battle`
+  // (mutated in-place, same reference) so the effect re-fires each spin.
   useEffect(() => {
     if (!battle || !sceneReady || !sceneRef.current) return;
 
@@ -170,7 +171,7 @@ export function PixiBattleCanvas() {
     const plrData = getActiveCardsData(battle, battle.player1.id);
     scene.setActiveCards(oppData, plrData);
 
-    // Mini reel grid
+    // Mini reel grid - shows current HP and KO status
     const reelGrid = getReelGridData(battle, battle.player1.id);
     scene.setMiniReel(reelGrid, -1);
 
@@ -194,7 +195,7 @@ export function PixiBattleCanvas() {
 
     // Overtime overlay
     scene.overtimeOverlay.setIntensity(battle.currentSpin > 10 ? battle.currentSpin - 10 : 0);
-  }, [battle, sceneReady, texturesLoaded]);
+  }, [tournament, sceneReady, texturesLoaded]);
 
   // Handle pending events -> animate via AnimationDirector
   useEffect(() => {
