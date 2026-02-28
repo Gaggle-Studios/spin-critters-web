@@ -186,7 +186,7 @@ export class AnimationDirector {
 
   private getEventDuration(event: BattleEvent): number {
     switch (event.type) {
-      case 'spin-result': return 1.6;
+      case 'spin-result': return 0.6;
       case 'attack': return 0.5;
       case 'thorns': return 0.35;
       case 'venomous':
@@ -270,10 +270,34 @@ export class AnimationDirector {
       this.scene.setBattleLineText(`BATTLE LINE - Spin ${event.spin}${overtime}`);
     });
 
-    // Trigger reel spin
+    // Show cards immediately (spinReels is async and conflicts with the GSAP timeline)
     tl.call(() => {
-      this.scene.spinReels(oppResults, plrResults);
+      this.scene.setActiveCards(oppResults, plrResults);
     });
+
+    // Brief flash effect on each card to indicate "spin landed"
+    for (let col = 0; col < 5; col++) {
+      if (plrResults[col] || oppResults[col]) {
+        const delay = col * 0.08;
+        tl.call(() => {
+          // Flash the card by briefly setting highlight, then removing it
+          if (plrResults[col]) {
+            const card = this.scene.getPlayerCard(col);
+            if (card) {
+              card.alpha = 0.5;
+              gsap.to(card, { alpha: 1, duration: 0.3, ease: 'power2.out' });
+            }
+          }
+          if (oppResults[col]) {
+            const card = this.scene.getOpponentCard(col);
+            if (card) {
+              card.alpha = 0.5;
+              gsap.to(card, { alpha: 1, duration: 0.3, ease: 'power2.out' });
+            }
+          }
+        }, [], delay);
+      }
+    }
 
     // Initialize HP from spin result
     tl.call(() => {

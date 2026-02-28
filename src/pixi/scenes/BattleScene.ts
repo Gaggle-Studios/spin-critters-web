@@ -225,6 +225,10 @@ export class BattleScene extends Container {
     return card.data;
   }
 
+  /** Get the PixiCard object for direct manipulation */
+  getPlayerCard(col: number): PixiCard { return this.playerCards[col]; }
+  getOpponentCard(col: number): PixiCard { return this.opponentCards[col]; }
+
   /** Set mini reel grid (compact view of all player cards) */
   setMiniReel(reelData: (PixiCardData | null)[][], activeRow: number): void {
     const compactW = 95;

@@ -41,7 +41,14 @@ class PixiErrorBoundary extends Component<{ children: ReactNode }, { hasError: b
   render() {
     if (this.state.hasError) {
       console.warn('[PixiJS] Falling back to DOM BattleView due to error:', this.state.error);
-      return <BattleView />;
+      return (
+        <>
+          <div style={{ background: '#c0392b', color: '#fff', padding: '6px 14px', fontSize: 13, textAlign: 'center' }}>
+            PixiJS error: {this.state.error} (using DOM fallback)
+          </div>
+          <BattleView />
+        </>
+      );
     }
     return this.props.children;
   }
