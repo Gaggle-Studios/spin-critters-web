@@ -190,6 +190,17 @@ export class AnimationDirector {
     return playerId !== humanPlayerId;
   }
 
+  /** Update active card + mirror the change to the mini reel for player cards */
+  private updateCardAndMiniReel(isOpp: boolean, col: number, data: Partial<PixiCardData>): void {
+    this.scene.updateCard(isOpp, col, data);
+    if (!isOpp) {
+      const cardData = this.scene.getCardData(false, col);
+      if (cardData) {
+        this.scene.updateMiniReelCard(cardData.instanceId, data);
+      }
+    }
+  }
+
   private buildEventTimeline(
     event: BattleEvent,
     battle: BattleState,
@@ -383,7 +394,7 @@ export class AnimationDirector {
         health: event.defenderNewHealth,
         isKO: event.defenderIsKO,
       });
-      this.scene.updateCard(defenderIsOpp, event.defenderCol, {
+      this.updateCardAndMiniReel(defenderIsOpp, event.defenderCol, {
         health: event.defenderNewHealth,
         isKO: event.defenderIsKO,
       });
@@ -417,7 +428,7 @@ export class AnimationDirector {
     // Update HP
     tl.call(() => {
       this.setHP(event.playerId, event.col, { health: event.newHealth, isKO: event.isKO });
-      this.scene.updateCard(targetIsOpp, event.col, {
+      this.updateCardAndMiniReel(targetIsOpp, event.col, {
         health: event.newHealth,
         isKO: event.isKO,
       });
@@ -462,7 +473,7 @@ export class AnimationDirector {
 
     tl.call(() => {
       this.setHP(event.playerId, event.col, { health: event.newHealth, isKO: event.isKO });
-      this.scene.updateCard(isOpp, event.col, {
+      this.updateCardAndMiniReel(isOpp, event.col, {
         health: event.newHealth,
         isKO: event.isKO,
       });
@@ -494,7 +505,7 @@ export class AnimationDirector {
 
     tl.call(() => {
       this.setHP(event.playerId, event.col, { health: event.newHealth, isKO: event.isKO });
-      this.scene.updateCard(isOpp, event.col, {
+      this.updateCardAndMiniReel(isOpp, event.col, {
         health: event.newHealth,
         isKO: event.isKO,
       });
@@ -521,7 +532,7 @@ export class AnimationDirector {
 
     tl.call(() => {
       this.setHP(event.playerId, event.col, { health: event.newHealth });
-      this.scene.updateCard(isOpp, event.col, { health: event.newHealth });
+      this.updateCardAndMiniReel(isOpp, event.col, { health: event.newHealth });
     }, [], 0.15);
 
     return tl;
@@ -546,7 +557,7 @@ export class AnimationDirector {
 
     tl.call(() => {
       this.setHP(event.playerId, event.targetCol, { health: event.targetNewHealth });
-      this.scene.updateCard(isOpp, event.targetCol, { health: event.targetNewHealth });
+      this.updateCardAndMiniReel(isOpp, event.targetCol, { health: event.targetNewHealth });
     }, [], 0.15);
 
     return tl;
@@ -631,7 +642,7 @@ export class AnimationDirector {
     // Mark card as KO
     tl.call(() => {
       this.setHP(event.playerId, event.col, { isKO: true, health: 0 });
-      this.scene.updateCard(isOpp, event.col, { isKO: true, health: 0 });
+      this.updateCardAndMiniReel(isOpp, event.col, { isKO: true, health: 0 });
     }, [], 0.1);
 
     return tl;

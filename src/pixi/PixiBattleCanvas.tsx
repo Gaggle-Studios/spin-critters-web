@@ -171,9 +171,12 @@ export function PixiBattleCanvas() {
     const plrData = getActiveCardsData(battle, battle.player1.id);
     scene.setActiveCards(oppData, plrData);
 
-    // Mini reel grid - shows current HP and KO status
-    const reelGrid = getReelGridData(battle, battle.player1.id);
-    scene.setMiniReel(reelGrid, -1);
+    // Mini reel grid - only sync when NOT animating to avoid spoiling results.
+    // During animation, the AnimationDirector updates mini reel cards progressively.
+    if (!isStoreAnimating) {
+      const reelGrid = getReelGridData(battle, battle.player1.id);
+      scene.setMiniReel(reelGrid, -1);
+    }
 
     // Dominant biome for background particles
     const biomeCounts: Record<string, number> = {};
@@ -195,7 +198,7 @@ export function PixiBattleCanvas() {
 
     // Overtime overlay
     scene.overtimeOverlay.setIntensity(battle.currentSpin > 10 ? battle.currentSpin - 10 : 0);
-  }, [tournament, sceneReady, texturesLoaded]);
+  }, [tournament, sceneReady, texturesLoaded, isStoreAnimating]);
 
   // Handle pending events -> animate via AnimationDirector
   useEffect(() => {

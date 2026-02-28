@@ -263,6 +263,18 @@ export class BattleScene extends Container {
     }
   }
 
+  /** Update a mini reel card matching the given instanceId */
+  updateMiniReelCard(instanceId: string, data: Partial<PixiCardData>): void {
+    for (const row of this.miniReelCards) {
+      for (const card of row) {
+        if (card.data && card.data.instanceId === instanceId) {
+          card.setData({ ...card.data, ...data });
+          return;
+        }
+      }
+    }
+  }
+
   /** Ticker update for ambient effects */
   update(dt: number): void {
     this.particleManager.update(dt);
