@@ -9,8 +9,8 @@ export class BattleIntroScene extends Container {
   private leftPanel: Container;
   private rightPanel: Container;
   private vsText: Text;
-  private width: number;
-  private height: number;
+  private _w: number;
+  private _h: number;
 
   constructor(
     width: number,
@@ -19,8 +19,8 @@ export class BattleIntroScene extends Container {
     opponentName: string,
   ) {
     super();
-    this.width = width;
-    this.height = height;
+    this._w = width;
+    this._h = height;
 
     // Dark background
     this.bg = new Graphics();

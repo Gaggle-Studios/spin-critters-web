@@ -701,7 +701,7 @@ export class AnimationDirector {
     const dimOverlay = new Graphics();
     dimOverlay.rect(-2000, -2000, 4000, 4000);
     dimOverlay.fill({ color: 0x000000, alpha: 0 });
-    tl.call(() => this.scene.vfxLayer.addChild(dimOverlay), [], 0);
+    tl.call(() => { this.scene.vfxLayer.addChild(dimOverlay); }, [], 0);
     tl.to(dimOverlay, { alpha: 0.3, duration: 0.15, ease: 'power1.in' }, 0);
 
     // Collect cleanup refs
@@ -730,7 +730,7 @@ export class AnimationDirector {
       flash.roundRect(pos.x - 60, pos.y - 85, 120, 170, 6);
       flash.fill({ color: 0xFFFFFF, alpha: 0 });
       allFlashes.push(flash);
-      tl.call(() => this.scene.vfxLayer.addChild(flash), [], t);
+      tl.call(() => { this.scene.vfxLayer.addChild(flash); }, [], t);
       tl.to(flash, { alpha: 0.5 * intensity, duration: 0.04 }, t);
       tl.to(flash, { alpha: 0, duration: 0.2, ease: 'power2.out' }, t + 0.04);
 
@@ -739,7 +739,7 @@ export class AnimationDirector {
       glow.roundRect(pos.x - 70, pos.y - 95, 140, 190, 10);
       glow.fill({ color, alpha: 0 });
       allGlows.push(glow);
-      tl.call(() => this.scene.vfxLayer.addChildAt(glow, 0), [], t);
+      tl.call(() => { this.scene.vfxLayer.addChildAt(glow, 0); }, [], t);
       tl.to(glow, { alpha: 0.2 * intensity, duration: 0.15, ease: 'power1.out' }, t);
 
       // Lift up, then slam down with scale pop
