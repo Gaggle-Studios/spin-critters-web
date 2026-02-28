@@ -1,4 +1,4 @@
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense, Component, type ReactNode } from 'react';
 import { useGameStore } from '../store/gameStore.ts';
 import { StatusBar } from './StatusBar.tsx';
 import { CritterSelect } from './CritterSelect.tsx';
@@ -24,6 +24,27 @@ function PixiBattleFallback() {
       <div className="font-display" style={{ fontSize: 24 }}>Loading battle renderer...</div>
     </div>
   );
+}
+
+// Error boundary to catch PixiJS crashes and fall back to DOM renderer
+class PixiErrorBoundary extends Component<{ children: ReactNode }, { hasError: boolean; error: string }> {
+  constructor(props: { children: ReactNode }) {
+    super(props);
+    this.state = { hasError: false, error: '' };
+  }
+  static getDerivedStateFromError(error: Error) {
+    return { hasError: true, error: error.message };
+  }
+  componentDidCatch(error: Error, info: React.ErrorInfo) {
+    console.error('[PixiJS Battle Error]', error, info.componentStack);
+  }
+  render() {
+    if (this.state.hasError) {
+      console.warn('[PixiJS] Falling back to DOM BattleView due to error:', this.state.error);
+      return <BattleView />;
+    }
+    return this.props.children;
+  }
 }
 
 export function GameBoard() {
@@ -64,7 +85,7 @@ export function GameBoard() {
       {tournament.phase === 'initial-draft' && <DraftView />}
       {tournament.phase === 'battle' && (
         USE_PIXI_BATTLE
-          ? <Suspense fallback={<PixiBattleFallback />}><LazyPixiBattleCanvas /></Suspense>
+          ? <PixiErrorBoundary><Suspense fallback={<PixiBattleFallback />}><LazyPixiBattleCanvas /></Suspense></PixiErrorBoundary>
           : <BattleView />
       )}
       {tournament.phase === 'shop' && <ShopView />}

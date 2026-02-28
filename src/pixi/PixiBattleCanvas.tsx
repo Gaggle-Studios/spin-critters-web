@@ -59,7 +59,13 @@ export function PixiBattleCanvas() {
     const container = containerRef.current;
     if (!canvas || !container) return;
 
-    const app = new PixiBattleApp();
+    let app: PixiBattleApp;
+    try {
+      app = new PixiBattleApp();
+    } catch (e) {
+      console.error('[PixiJS] Failed to create app:', e);
+      return;
+    }
     appRef.current = app;
 
     // Use requestAnimationFrame to ensure container has layout dimensions
@@ -83,6 +89,8 @@ export function PixiBattleCanvas() {
         });
 
         setSceneReady(true);
+      }).catch((e) => {
+        console.error('[PixiJS] Failed to initialize:', e);
       });
     });
 
