@@ -1,5 +1,5 @@
-export type Biome = 'Red' | 'Blue' | 'Cream' | 'Brown' | 'Green';
-export type Archetype = 'Insect' | 'Mammal' | 'Reptile' | 'Avian' | 'Aquatic';
+export type Biome = 'Red' | 'Blue' | 'Cream' | 'Brown' | 'Green' | 'None';
+export type Archetype = 'Insect' | 'Mammal' | 'Reptile' | 'Avian' | 'Aquatic' | 'None';
 export type CardCategory = 'Critter' | 'Ally' | 'Location' | 'Relic' | 'Junk';
 export type Rarity = 'Common' | 'Uncommon' | 'Rare';
 export type BattlePhase = 'spin' | 'on-appear' | 'crit-resolution' | 'fast-attack' | 'regular-attack' | 'slow-attack' | 'cleanup';

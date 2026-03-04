@@ -44,6 +44,13 @@ export const BIOME_THEMES: Record<Biome, BiomeThemeConfig> = {
     glowColor: 0x27AE60,
     bgGradientStops: ['#0a1a0f', '#0d0d1a'],
   },
+  None: {
+    color: 0x333333,
+    colorHex: '#333333',
+    particleColors: [0x555555, 0x444444, 0x333333],
+    glowColor: 0x333333,
+    bgGradientStops: ['#1a1a1a', '#0d0d1a'],
+  },
 };
 
 export function getBiomeTheme(biome: Biome): BiomeThemeConfig {

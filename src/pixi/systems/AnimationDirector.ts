@@ -882,6 +882,9 @@ export class AnimationDirector {
       positions.push(this.scene.getCardCenter(isOpp, col));
     }
 
+    // Rate-limit crackle sound (at most once per 300ms)
+    let lastCrackleTime = 0;
+
     const redraw = () => {
       g.clear();
 
@@ -905,8 +908,10 @@ export class AnimationDirector {
         this.drawCardSparks(g, pos, color, 3 + Math.floor(Math.random() * 3));
       }
 
-      // Occasional crackle sound
-      if (Math.random() > 0.5) {
+      // Occasional crackle sound (rate-limited)
+      const now = performance.now();
+      if (Math.random() > 0.5 && now - lastCrackleTime > 300) {
+        lastCrackleTime = now;
         playSfx('critArc');
       }
     };
@@ -1083,7 +1088,7 @@ export class AnimationDirector {
     tl.call(() => {
       this.scene.setBattleLineText(event.label);
       // Kill electricity visual when attack phase starts
-      if (this._critElectricity && event.phase.includes('attack')) {
+      if (this._critElectricity && (event.phase === 'fast-attack' || event.phase === 'regular-attack' || event.phase === 'slow-attack')) {
         this.stopCritElectricity();
       }
     });

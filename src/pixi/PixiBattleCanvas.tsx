@@ -13,11 +13,18 @@ import { CARD_W, CARD_H } from './objects/PixiCard';
 import { loadCritters } from '../engine/cards';
 import type { Biome, BattleEvent, CardInstance, CardDefinition } from '../engine/types';
 
-// Cache critter definitions (they never change)
-let critterDefsCache: CardDefinition[] | null = null;
-function getCritterDefs(): CardDefinition[] {
-  if (!critterDefsCache) critterDefsCache = loadCritters();
-  return critterDefsCache;
+// Cache card definition lookup map (critter defs never change, card pool is stable per battle)
+let cardDefMapCache: Map<string, CardDefinition> | null = null;
+let cardDefMapPoolSize = -1;
+function getCardDefMap(): Map<string, CardDefinition> {
+  const pool = useGameStore.getState().tournament.cardPool;
+  if (cardDefMapCache && cardDefMapPoolSize === pool.length) return cardDefMapCache;
+  const map = new Map<string, CardDefinition>();
+  for (const d of loadCritters()) map.set(d.cardId, d);
+  for (const d of pool) map.set(d.cardId, d);
+  cardDefMapCache = map;
+  cardDefMapPoolSize = pool.length;
+  return map;
 }
 
 const COMPACT_W = 95;
@@ -305,13 +312,15 @@ export function PixiBattleCanvas() {
       return col;
     };
 
+    // Mini reel grid dimensions (computed once)
+    const miniReelTotalW = 5 * COMPACT_W + 4 * COMPACT_GAP;
+    const miniReelOffsetX = (layout.width - miniReelTotalW) / 2;
+
     // Helper: determine mini reel card from position
     const getMiniReelPos = (x: number, y: number): { row: number; col: number } | null => {
       const miniY = y - layout.miniReelY;
       if (miniY < 0) return null;
-      const totalW = 5 * COMPACT_W + 4 * COMPACT_GAP;
-      const offsetX = (layout.width - totalW) / 2;
-      const relX = x - offsetX;
+      const relX = x - miniReelOffsetX;
       if (relX < 0) return null;
       const col = Math.floor(relX / (COMPACT_W + COMPACT_GAP));
       if (col >= 5) return null;
@@ -365,9 +374,7 @@ export function PixiBattleCanvas() {
         const slot = currentBattle.player1.reels[pos.row]?.[pos.col];
         foundCard = slot?.card ?? null;
         if (foundCard) {
-          const totalW = 5 * COMPACT_W + 4 * COMPACT_GAP;
-          const offsetX = (layout.width - totalW) / 2;
-          const cardX = offsetX + pos.col * (COMPACT_W + COMPACT_GAP);
+          const cardX = miniReelOffsetX + pos.col * (COMPACT_W + COMPACT_GAP);
           const cardY = layout.miniReelY + pos.row * (COMPACT_H + COMPACT_GAP);
           cardScreenRect = new DOMRect(
             containerRect.left + cardX / scaleX,
@@ -384,8 +391,7 @@ export function PixiBattleCanvas() {
       if (hoveredCard?.card.instanceId !== foundCard.instanceId) {
         if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
         hoverTimeoutRef.current = setTimeout(() => {
-          const allDefs = [...getCritterDefs(), ...useGameStore.getState().tournament.cardPool];
-          const def = allDefs.find(d => d.cardId === foundCard!.definitionId) ?? null;
+          const def = getCardDefMap().get(foundCard!.definitionId) ?? null;
           setHoveredCard({ card: foundCard!, def, rect: cardScreenRect! });
         }, 80);
       }

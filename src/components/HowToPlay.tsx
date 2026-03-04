@@ -117,7 +117,7 @@ export function HowToPlay({ onClose, onStartTutorial }: HowToPlayProps) {
         {/* Biomes */}
         <Section title="Biomes">
           <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-            {Object.entries(BIOME_COLORS).map(([name, color]) => (
+            {Object.entries(BIOME_COLORS).filter(([name]) => name !== 'None').map(([name, color]) => (
               <span key={name} style={{
                 background: color,
                 color: name === 'Cream' ? '#333' : '#fff',

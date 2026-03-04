@@ -417,9 +417,10 @@ export function executeSpin(battle: BattleState): BattleState {
   for (const [active, player] of [[p1Active, p1], [p2Active, p2]] as [((CardInstance | null)[]), PlayerState][]) {
     const activeNonNull = active.filter((c): c is CardInstance => c !== null && !c.isKO);
     if (activeNonNull.length === REEL_WIDTH) {
-      // Biome CRIT
-      const biome = activeNonNull[0].biome;
-      if (activeNonNull.every((c) => c.biome === biome)) {
+      // Biome CRIT (Junk cards don't count toward CRITs)
+      const nonJunk = activeNonNull.filter(c => c.category !== 'Junk');
+      const biome = nonJunk[0]?.biome;
+      if (nonJunk.length === REEL_WIDTH && nonJunk.every((c) => c.biome === biome)) {
         log.push({ spin, phase: critPhase, message: `BIOME CRIT! All ${player.name}'s active cards are ${biome}!` });
         events.push({ type: 'crit-biome', spin, playerId: player.id, biome });
         for (const c of activeNonNull) {
@@ -427,9 +428,9 @@ export function executeSpin(battle: BattleState): BattleState {
           critBonusCards.push(c);
         }
       }
-      // Archetype CRIT
-      const arch = activeNonNull[0].archetype;
-      if (activeNonNull.every((c) => c.archetype === arch)) {
+      // Archetype CRIT (Junk cards don't count)
+      const arch = nonJunk[0]?.archetype;
+      if (nonJunk.length === REEL_WIDTH && nonJunk.every((c) => c.archetype === arch)) {
         log.push({ spin, phase: critPhase, message: `ARCHETYPE CRIT! All ${player.name}'s active cards are ${arch}!` });
         events.push({ type: 'crit-archetype', spin, playerId: player.id, archetype: arch });
         for (const critter of player.critters) {

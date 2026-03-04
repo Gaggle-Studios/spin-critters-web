@@ -49,6 +49,7 @@ export const BIOME_COLORS: Record<string, string> = {
   Cream: '#F5E6CC',
   Brown: '#8B4513',
   Green: '#27AE60',
+  None: '#333333',
 };
 
 export const KEYWORD_INFO: Record<string, { color: string; icon: string; description: string }> = {

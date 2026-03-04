@@ -1,7 +1,6 @@
 import { Container, Graphics } from 'pixi.js';
 import gsap from 'gsap';
 import { PixiCard, CARD_W, CARD_H, type PixiCardData } from './PixiCard';
-import { biomeToNumber } from '../utils/BiomeTheme';
 import type { Biome } from '../../engine/types';
 
 const PHANTOM_COUNT = 8;
@@ -106,30 +105,12 @@ export class PixiReelColumn extends Container {
         duration,
         ease: 'power2.out', // Decelerating ease
         onComplete: () => {
-          this.flashLand(resultData);
           resolve();
         },
       });
     });
   }
 
-  private flashLand(data: PixiCardData): void {
-    const color = data.category === 'Junk' ? 0x888888 : biomeToNumber(data.biome);
-    const flash = new Graphics();
-    flash.roundRect(-2, -2, CARD_W + 4, CARD_H + 4, 8);
-    flash.fill({ color, alpha: 0.4 });
-    this.addChild(flash);
-
-    gsap.to(flash, {
-      alpha: 0,
-      duration: 0.4,
-      ease: 'power2.out',
-      onComplete: () => {
-        this.removeChild(flash);
-        flash.destroy();
-      },
-    });
-  }
 
   /** Immediately show a card without animation */
   showStatic(data: PixiCardData | null): void {

@@ -18,6 +18,7 @@ const ALLY_NAME_PREFIX: Record<Biome, string[]> = {
   Cream: ['Snow', 'Pale', 'Frost', 'Tundra', 'Sleet', 'Hail', 'Glaze'],
   Brown: ['Stone', 'Cave', 'Dust', 'Clay', 'Ore', 'Gravel', 'Flint'],
   Green: ['Vine', 'Leaf', 'Moss', 'Fern', 'Thorn', 'Root', 'Bloom'],
+  None: [],
 };
 
 const ALLY_NAME_SUFFIX: Record<Archetype, string[]> = {
@@ -26,6 +27,7 @@ const ALLY_NAME_SUFFIX: Record<Archetype, string[]> = {
   Reptile: ['Gecko', 'Viper', 'Skink', 'Drake', 'Newt', 'Croc', 'Cobra'],
   Avian: ['Hawk', 'Wren', 'Crow', 'Owl', 'Jay', 'Swift', 'Finch'],
   Aquatic: ['Eel', 'Pike', 'Ray', 'Crab', 'Squid', 'Trout', 'Perch'],
+  None: [],
 };
 
 const LOCATION_NAMES: Record<Biome, string[]> = {
@@ -34,6 +36,7 @@ const LOCATION_NAMES: Record<Biome, string[]> = {
   Cream: ['Frozen Lake', 'Ice Cavern', 'Snow Peak'],
   Brown: ['Crystal Mine', 'Deep Tunnel', 'Stone Hall'],
   Green: ['Ancient Grove', 'Fungal Glade', 'Canopy Nest'],
+  None: [],
 };
 
 const RELIC_NAMES: Record<Biome, string[]> = {
@@ -42,6 +45,7 @@ const RELIC_NAMES: Record<Biome, string[]> = {
   Cream: ['Ice Crystal', 'Snow Rune', 'Pale Stone'],
   Brown: ['Cave Pearl', 'Stone Idol', 'Earth Sigil'],
   Green: ['Life Seed', 'Vine Crown', 'Root Charm'],
+  None: [],
 };
 
 let nextId = 100;
@@ -266,8 +270,8 @@ export const JUNK_CARD: CardDefinition = {
   name: 'Junk',
   category: 'Junk',
   rarity: 'Common',
-  biome: 'Red',
-  archetype: 'Insect',
+  biome: 'None',
+  archetype: 'None',
   attack: 0,
   health: 1,
   loyalty: 0,
